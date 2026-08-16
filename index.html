@@ -56,7 +56,7 @@
     <style>
         :root {
             --safe-top: max(1.25rem, env(safe-area-inset-top, 24px));
-            --safe-bottom: max(1rem, env(safe-area-inset-bottom, 20px));
+            --safe-bottom: 0px;
         }
 
         html, body {
@@ -235,10 +235,18 @@
             <!-- TAB 3: I TOMI SEGRETI -->
             <section id="sec-tomi" class="hidden space-y-4">
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
-                    <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-black/10 dark:border-white/10 pb-2.5 gap-2">
                         <h2 class="font-medieval text-xs font-bold flex items-center gap-2 uppercase tracking-wider app-title-text">
                             <i class="fa-solid fa-masks-theater text-purple-500"></i> Indice dei Ruoli Attivi
                         </h2>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleRoleEditMode()" id="edit-mode-toggle-btn" class="px-2.5 py-1.5 bg-gold-600/20 hover:bg-gold-600/40 text-gold-400 border border-gold-500/50 text-[10px] font-medieval font-bold uppercase rounded-lg active:scale-95 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen-to-square"></i> Modifica Ruoli
+                            </button>
+                            <button onclick="openEditRoleModal(null)" id="add-role-btn" class="hidden px-2.5 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-emerald-100 border border-emerald-500/50 text-[10px] font-medieval font-bold uppercase rounded-lg active:scale-95 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> Nuovo
+                            </button>
+                        </div>
                     </div>
 
                     <p class="text-[11px] opacity-90 leading-relaxed font-body app-body-text">
@@ -254,7 +262,7 @@
         </main>
 
         <!-- Bottom Navigation Bar -->
-        <nav id="bottom-nav" class="safe-pad-bottom pt-2.5 px-3 flex items-center justify-around shrink-0 z-20 border-t transition-colors duration-500 w-full">
+        <nav id="bottom-nav" class="pb-3 pt-2.5 px-3 flex items-center justify-around shrink-0 z-20 border-t transition-colors duration-500 w-full">
             <button onclick="switchTab('partita')" id="tab-partita" class="flex flex-col items-center gap-1 px-3 py-1 scale-105 transition-all text-gold-400">
                 <i class="fa-solid fa-scroll text-lg drop-shadow"></i>
                 <span class="font-medieval text-[10px] font-bold uppercase tracking-widest">La Cronaca</span>
@@ -269,6 +277,55 @@
             </button>
         </nav>
 
+    </div>
+
+    <!-- Modale Modifica/Creazione Ruolo -->
+    <div id="edit-role-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-sm w-full p-5 space-y-4 text-left shadow-2xl border-2 border-gold-600 bg-night-950 text-parchment-200 gothic-border">
+            <div class="flex justify-between items-center border-b border-gold-600/30 pb-2">
+                <h3 id="modal-role-title" class="font-gothic text-sm font-bold uppercase tracking-wider text-gold-400">Modifica Ruolo</h3>
+                <button onclick="closeEditRoleModal()" class="text-gold-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="space-y-3 text-xs font-body">
+                <div>
+                    <label class="block font-medieval text-[10px] uppercase text-gold-300 font-bold mb-1">Nome Ruolo</label>
+                    <input type="text" id="role-edit-name" class="w-full input-medieval rounded-xl px-3 py-2 bg-black/60 text-white border border-gold-500/50 focus:outline-none">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-medieval text-[10px] uppercase text-gold-300 font-bold mb-1">Fazione</label>
+                        <select id="role-edit-team" class="w-full input-medieval rounded-xl px-2 py-2 bg-black/60 text-white border border-gold-500/50 focus:outline-none">
+                            <option value="villager">Villaggio (Buoni)</option>
+                            <option value="werewolf">Lupi (Cattivi)</option>
+                            <option value="solo">Solitario / Altro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medieval text-[10px] uppercase text-gold-300 font-bold mb-1">Quantità Minima</label>
+                        <input type="number" min="1" max="10" id="role-edit-count" class="w-full input-medieval rounded-xl px-3 py-2 bg-black/60 text-white border border-gold-500/50 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-medieval text-[10px] uppercase text-gold-300 font-bold mb-1">Descrizione & Potere</label>
+                    <textarea id="role-edit-desc" rows="3" class="w-full input-medieval rounded-xl px-3 py-2 bg-black/60 text-white border border-gold-500/50 focus:outline-none"></textarea>
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-gold-600/30 flex flex-col gap-2">
+                <span class="text-[9px] font-medieval uppercase tracking-widest text-gold-400 text-center">Come desideri salvare?</span>
+                <div class="flex gap-2">
+                    <button onclick="saveRoleFromModal(false)" class="flex-1 py-2.5 bg-wood-800 hover:bg-wood-700 text-parchment-200 text-[10px] font-medieval font-bold uppercase rounded-xl border border-wood-600 active:scale-95 transition">
+                        Solo Sessione
+                    </button>
+                    <button onclick="saveRoleFromModal(true)" class="flex-1 py-2.5 bg-gradient-to-r from-amber-600 to-gold-600 hover:from-amber-500 hover:to-gold-500 text-night-950 text-[10px] font-medieval font-bold uppercase rounded-xl border border-gold-300 shadow active:scale-95 transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-floppy-disk"></i> Per Sempre
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modale Rivelazione Segreta -->
@@ -364,6 +421,8 @@
         };
 
         let confirmCallback = null;
+        let isRoleEditMode = false;
+        let editingRoleId = null;
 
         function getPlayerRoleLabel(player) {
             if (!player || !player.roleId) return 'Villico';
@@ -373,11 +432,19 @@
         }
 
         window.onload = function() {
-            const saved = localStorage.getItem('lupus_master_state_v8');
-            if (saved) {
+            const savedState = localStorage.getItem('lupus_master_state_v8');
+            const savedPermanentRoles = localStorage.getItem('lupus_master_permanent_roles_v9');
+
+            if (savedState) {
                 try {
-                    const parsed = JSON.parse(saved);
+                    const parsed = JSON.parse(savedState);
                     appState = { ...appState, ...parsed };
+                } catch(e) {}
+            }
+
+            if (savedPermanentRoles) {
+                try {
+                    appState.roles = JSON.parse(savedPermanentRoles);
                 } catch(e) {}
             }
 
@@ -1015,6 +1082,16 @@
                             <span class="font-gothic text-xs font-bold capitalize ${titleColor}">${role.name}</span>
                             <span class="text-[8px] font-medieval font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeBg}">${role.team}</span>
                         </div>
+                        ${isRoleEditMode ? `
+                            <div class="flex items-center gap-1">
+                                <button onclick="openEditRoleModal('${role.id}')" class="p-1.5 bg-gold-600/20 text-gold-400 hover:text-white rounded-lg border border-gold-500/30 text-xs active:scale-95 transition" title="Modifica">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="deleteRoleWithChoice('${role.id}')" class="p-1.5 bg-blood-900/40 text-red-300 hover:text-white rounded-lg border border-blood-500/30 text-xs active:scale-95 transition" title="Elimina">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
 
                     <div class="text-[10px] space-y-1 font-body">
@@ -1026,6 +1103,115 @@
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function toggleRoleEditMode() {
+            isRoleEditMode = !isRoleEditMode;
+            const btn = document.getElementById('edit-mode-toggle-btn');
+            const addBtn = document.getElementById('add-role-btn');
+            if (isRoleEditMode) {
+                btn.className = "px-2.5 py-1.5 bg-gold-500 text-night-950 font-medieval font-bold text-[10px] uppercase rounded-lg active:scale-95 transition flex items-center gap-1.5 shadow";
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Fine Modifica`;
+                addBtn.classList.remove('hidden');
+            } else {
+                btn.className = "px-2.5 py-1.5 bg-gold-600/20 hover:bg-gold-600/40 text-gold-400 border border-gold-500/50 text-[10px] font-medieval font-bold uppercase rounded-lg active:scale-95 transition flex items-center gap-1.5";
+                btn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Modifica Ruoli`;
+                addBtn.classList.add('hidden');
+            }
+            renderRolesList();
+        }
+
+        function openEditRoleModal(roleId) {
+            editingRoleId = roleId;
+            const modal = document.getElementById('edit-role-modal');
+            const title = document.getElementById('modal-role-title');
+            const nameIn = document.getElementById('role-edit-name');
+            const teamIn = document.getElementById('role-edit-team');
+            const countIn = document.getElementById('role-edit-count');
+            const descIn = document.getElementById('role-edit-desc');
+
+            if (roleId) {
+                const role = appState.roles.find(r => r.id === roleId);
+                if (role) {
+                    title.innerText = "Modifica Ruolo";
+                    nameIn.value = role.name;
+                    teamIn.value = role.team || 'villager';
+                    countIn.value = role.minCount || 1;
+                    descIn.value = role.desc || '';
+                }
+            } else {
+                title.innerText = "Nuovo Ruolo";
+                nameIn.value = '';
+                teamIn.value = 'villager';
+                countIn.value = 1;
+                descIn.value = '';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeEditRoleModal() {
+            document.getElementById('edit-role-modal').classList.add('hidden');
+            editingRoleId = null;
+        }
+
+        function saveRoleFromModal(isPermanent) {
+            const name = document.getElementById('role-edit-name').value.trim();
+            const team = document.getElementById('role-edit-team').value;
+            const count = parseInt(document.getElementById('role-edit-count').value, 10) || 1;
+            const desc = document.getElementById('role-edit-desc').value.trim();
+
+            if (!name) {
+                showToast("Inserisci un nome per il ruolo!", "blood");
+                return;
+            }
+
+            if (editingRoleId) {
+                const role = appState.roles.find(r => r.id === editingRoleId);
+                if (role) {
+                    role.name = name.toLowerCase();
+                    role.team = team;
+                    role.minCount = count;
+                    role.desc = desc;
+                }
+            } else {
+                const newId = name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now().toString().slice(-4);
+                appState.roles.push({
+                    id: newId,
+                    name: name.toLowerCase(),
+                    team: team,
+                    minCount: count,
+                    active: true,
+                    desc: desc
+                });
+            }
+
+            if (isPermanent) {
+                localStorage.setItem('lupus_master_permanent_roles_v9', JSON.stringify(appState.roles));
+                showToast("Ruoli salvati PER SEMPRE!", appState.phase);
+            } else {
+                showToast("Ruolo salvato per la SESSIONE!", appState.phase);
+            }
+
+            closeEditRoleModal();
+            saveToLocalStorage();
+            renderAll();
+        }
+
+        function deleteRoleWithChoice(roleId) {
+            const role = appState.roles.find(r => r.id === roleId);
+            if (!role) return;
+
+            openConfirmModal(
+                "Elimina Ruolo",
+                `Sei sicuro di voler eliminare il ruolo '${role.name}'?`,
+                () => {
+                    appState.roles = appState.roles.filter(r => r.id !== roleId);
+                    saveToLocalStorage();
+                    renderAll();
+                    showToast(`Ruolo '${role.name}' rimosso!`, "blood");
+                }
+            );
         }
 
         function toggleRoleActive(roleId, isActive) {
