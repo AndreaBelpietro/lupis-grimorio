@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#070912" id="meta-theme-color">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link id="pwa-manifest" rel="manifest">
+    <title>Lupus Master - Grimorio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        medieval: ['Cinzel', 'serif'],
+                        body: ['Lora', 'serif']
+                    },
+                    colors: {
+                        parchment: { 100: '#fdf5e6', 200: '#f0e3c4', 300: '#e3cfa1', 400: '#d1b98a', 800: '#5a4628', 900: '#3d2e18' },
+                        wood: { 600: '#5c3a21', 700: '#4a2f1d', 800: '#301d0f', 900: '#1c1007' },
+                        blood: { 500: '#8a0303', 600: '#660000', 900: '#330000' },
+                        night: { 800: '#1e2336', 900: '#111524', 950: '#070912' },
+                        moon: { 300: '#d1d5db', 400: '#9ca3af', 500: '#6b7280' },
+                        magic: { 400: '#a78bfa', 500: '#8b5cf6', 900: '#2e1065' }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            transition: background 0.8s ease, color 0.8s ease;
+        }
+        input, textarea, select {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { border-radius: 4px; }
+        
+        .stagger-item { opacity: 0; }
+        
+        .theme-day {
+            background: radial-gradient(circle at center, #f4e8d3 0%, #d8c3a5 100%);
+            color: #3d2e18;
+        }
+        .theme-day .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(90, 70, 40, 0.4); }
+        .theme-day .glass-panel {
+            background: rgba(253, 245, 230, 0.6);
+            border: 1px solid #d1b98a;
+            box-shadow: inset 0 0 10px rgba(90, 70, 40, 0.05), 0 4px 6px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px);
+        }
+        .theme-day .input-medieval { background: rgba(255, 255, 255, 0.6); border: 1px solid #c8b18b; color: #3d2e18; }
+        
+        .theme-night {
+            background: radial-gradient(circle at top, #1e2336 0%, #070912 100%);
+            color: #e5e7eb;
+        }
+        .theme-night .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); }
+        .theme-night .glass-panel {
+            background: rgba(17, 21, 36, 0.6);
+            border: 1px solid #2e3650;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3), 0 4px 10px rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+        }
+        .theme-night .input-medieval { background: rgba(0, 0, 0, 0.5); border: 1px solid #374151; color: #d1d5db; }
+
+        .toggle-checkbox:checked { right: 0; border-color: #68D391; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #68D391; }
+        .toggle-checkbox:checked:focus { outline: none; box-shadow: none; }
+    </style>
+</head>
+<body id="app-body" class="theme-night h-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-500 selection:text-white">
+
+    <div class="w-full max-w-md h-full sm:h-[95vh] sm:rounded-[36px] border-0 sm:border-[8px] sm:border-wood-900 shadow-2xl flex flex-col relative overflow-hidden bg-transparent transition-all duration-500">
+
+        <header id="main-header" class="pt-5 pb-4 px-5 flex items-center justify-between shrink-0 z-20 border-b transition-all duration-800 relative overflow-hidden">
+            <div id="header-bg-fx" class="absolute inset-0 opacity-20 pointer-events-none transition-all duration-800"></div>
+            <div class="flex flex-col relative z-10">
+                <h1 class="font-medieval text-2xl font-bold tracking-widest leading-none drop-shadow-md flex items-center gap-2" id="header-title">
+                    <i class="fa-solid fa-moon text-moon-400 animate-pulse-slow"></i> Il Grimorio
+                </h1>
+                <span class="text-xs uppercase tracking-widest font-semibold opacity-70 mt-1" id="header-subtitle">Fase Notturna</span>
+            </div>
+
+            <button onclick="togglePhase()" id="phase-btn" class="px-4 py-2.5 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider border-2 shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+            </button>
+        </header>
+
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-5 pb-28 scroll-smooth relative z-10">
+
+            <section id="sec-partita" class="space-y-5 transition-opacity duration-300">
+                <div id="dynamic-phase-container"></div>
+            </section>
+
+            <section id="sec-taverna" class="hidden space-y-5 transition-opacity duration-300">
+                <div class="glass-panel rounded-2xl p-4 space-y-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <h2 class="font-medieval text-base font-bold flex items-center gap-2 text-wood-900 dark:text-moon-300 border-b border-black/10 dark:border-white/10 pb-2">
+                        <i class="fa-solid fa-user-plus"></i> Evoca Anime
+                    </h2>
+                    <div class="flex gap-2">
+                        <input type="text" id="single-player-name" onkeydown="if(event.key==='Enter') addSinglePlayer()" placeholder="Nome dell'abitante..." class="flex-1 input-medieval rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blood-500 transition-all">
+                        <button onclick="addSinglePlayer()" class="px-5 py-2.5 bg-blood-600 hover:bg-blood-500 text-white text-sm font-bold rounded-xl shadow-lg border border-blood-900 active:scale-95 transition-all">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-4 space-y-4 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-3 flex-wrap gap-y-2">
+                        <h2 class="font-medieval text-base font-bold flex items-center gap-2 text-wood-900 dark:text-moon-300 w-full sm:w-auto">
+                            <i class="fa-solid fa-users"></i> Popolazione (<span id="total-players-badge" class="text-blood-600 dark:text-blood-500">0</span>)
+                        </h2>
+                        <div class="flex gap-2 w-full sm:w-auto justify-end">
+                            <button onclick="startRoleReveal()" class="px-3 py-1.5 bg-moon-800 hover:bg-moon-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg border border-moon-500 active:scale-95 shadow transition-colors flex items-center gap-1.5" title="Passa il dispositivo per rivelare i ruoli in segreto">
+                                <i class="fa-solid fa-eye"></i> Rivela
+                            </button>
+                            <button onclick="shuffleAndAssignRoles()" class="px-3 py-1.5 bg-magic-900 hover:bg-magic-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg border border-magic-400 active:scale-95 shadow transition-colors flex items-center gap-1.5">
+                                <i class="fa-solid fa-sparkles"></i> Assegna
+                            </button>
+                            <button onclick="clearAllPlayers()" class="px-2 py-1.5 text-blood-600 hover:text-red-500 text-[10px] uppercase font-bold tracking-wider transition-colors">
+                                Epura
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="players-roster-list" class="space-y-2.5 pt-1">
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-tomi" class="hidden space-y-4 transition-opacity duration-300">
+                <div class="glass-panel rounded-2xl p-4 space-y-3 animate-fade-in-up">
+                    <h2 class="font-medieval text-base font-bold flex items-center gap-2 text-wood-900 dark:text-moon-300 border-b border-black/10 dark:border-white/10 pb-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Archivio del Master
+                    </h2>
+                    <p class="text-[10px] opacity-70 leading-tight">Salva o carica i dati della partita nei tuoi File locali (iOS/Mac). Funziona 100% offline.</p>
+                    <div class="flex gap-2 w-full">
+                        <button onclick="exportData()" class="flex-1 px-3 py-2 bg-wood-800 hover:bg-wood-700 text-parchment-100 text-[10px] uppercase font-bold tracking-wider rounded-lg shadow border border-wood-600 active:scale-95 transition-all flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-download"></i> Esporta File
+                        </button>
+                        <input type="file" id="file-import" accept=".json" class="hidden" onchange="importData(event)">
+                        <button onclick="document.getElementById('file-import').click()" class="flex-1 px-3 py-2 bg-magic-900 hover:bg-magic-800 text-white text-[10px] uppercase font-bold tracking-wider rounded-lg shadow border border-magic-600 active:scale-95 transition-all flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-upload"></i> Importa File
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-4 space-y-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="flex flex-col gap-2 border-b border-black/10 dark:border-white/10 pb-3">
+                        <div class="flex items-center justify-between">
+                            <h2 class="font-medieval text-base font-bold flex items-center gap-2 text-wood-900 dark:text-moon-300">
+                                <i class="fa-solid fa-book-skull"></i> Indice dei Ruoli
+                            </h2>
+                            <button onclick="openRoleModal()" class="px-3 py-1.5 bg-wood-800 text-parchment-100 text-[10px] uppercase font-bold rounded-lg border border-wood-600 active:scale-95 shadow transition-transform">
+                                <i class="fa-solid fa-plus"></i> Crea
+                            </button>
+                        </div>
+                        <p class="text-[10px] opacity-70 leading-tight">Attiva i ruoli che desideri includere. Il fato (tasto 'Assegna') creerà un mazzo bilanciato pescando dai ruoli attivati, aggiungendo Lupi in base ai giocatori e riempiendo con Villici.</p>
+                    </div>
+                    <div id="roles-container" class="space-y-3 pt-1 pb-4"></div>
+                </div>
+            </section>
+
+        </main>
+
+        <nav id="bottom-nav" class="absolute bottom-0 w-full border-t pt-3 pb-6 px-4 flex items-center justify-around z-30 transition-all duration-800 rounded-b-[28px] sm:rounded-b-[28px]">
+            <div class="absolute inset-0 backdrop-blur-md bg-opacity-90 z-[-1] nav-bg-layer"></div>
+            
+            <button onclick="switchTab('partita')" id="tab-partita" class="flex flex-col items-center gap-1.5 px-4 py-2 scale-110 transition-all duration-300 text-blood-500 relative">
+                <div class="absolute -top-3 w-8 h-1 bg-current rounded-full tab-indicator opacity-100 transition-opacity"></div>
+                <i class="fa-solid fa-scroll text-2xl drop-shadow-lg mb-1 animate-float"></i>
+                <span class="font-medieval text-[9px] font-bold uppercase tracking-widest">Cronaca</span>
+            </button>
+            <button onclick="switchTab('taverna')" id="tab-taverna" class="flex flex-col items-center gap-1.5 px-4 py-2 opacity-50 hover:opacity-100 transition-all duration-300 relative">
+                <div class="absolute -top-3 w-8 h-1 bg-current rounded-full tab-indicator opacity-0 transition-opacity"></div>
+                <i class="fa-solid fa-users text-2xl mb-1"></i>
+                <span class="font-medieval text-[9px] font-bold uppercase tracking-widest">Taverna</span>
+            </button>
+            <button onclick="switchTab('tomi')" id="tab-tomi" class="flex flex-col items-center gap-1.5 px-4 py-2 opacity-50 hover:opacity-100 transition-all duration-300 relative">
+                <div class="absolute -top-3 w-8 h-1 bg-current rounded-full tab-indicator opacity-0 transition-opacity"></div>
+                <i class="fa-solid fa-masks-theater text-2xl mb-1"></i>
+                <span class="font-medieval text-[9px] font-bold uppercase tracking-widest">Tomi</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <div id="role-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="glass-panel rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl border border-wood-600 bg-parchment-100 dark:bg-night-900 transform scale-95 transition-transform duration-300" id="role-modal-content">
+            <div class="flex items-center justify-between text-wood-900 dark:text-parchment-100 border-b border-wood-400/30 pb-3">
+                <h3 id="modal-role-title" class="font-medieval text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-pen-nib"></i> Forgia Patto
+                </h3>
+                <button onclick="closeRoleModal()" class="text-wood-600 dark:text-moon-400 hover:text-blood-600 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <form id="role-form" onsubmit="saveRole(event)" class="space-y-4">
+                <input type="hidden" id="modal-role-id">
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="col-span-2">
+                        <label class="text-[10px] text-wood-800 dark:text-moon-300 font-bold uppercase tracking-wider block mb-1">Nome Ruolo</label>
+                        <input type="text" id="role-name-input" required class="w-full input-medieval rounded-lg border border-wood-400/50 px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-blood-500">
+                    </div>
+                    
+                    <div class="col-span-2">
+                        <label class="text-[10px] text-wood-800 dark:text-moon-300 font-bold uppercase tracking-wider block mb-1">Descrizione Potere</label>
+                        <textarea id="role-desc-input" rows="2" class="w-full input-medieval rounded-lg border border-wood-400/50 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blood-500 custom-scrollbar"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-wood-800 dark:text-moon-300 font-bold uppercase tracking-wider block mb-1">Segno Fisico</label>
+                        <input type="text" id="role-gesture-input" required class="w-full input-medieval rounded-lg border border-wood-400/50 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blood-500">
+                    </div>
+                    
+                    <div>
+                        <label class="text-[10px] text-wood-800 dark:text-moon-300 font-bold uppercase tracking-wider block mb-1">Quantità in Partita</label>
+                        <input type="number" id="role-instances-input" min="1" value="1" required class="w-full input-medieval rounded-lg border border-wood-400/50 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blood-500">
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="text-[10px] text-wood-800 dark:text-moon-300 font-bold uppercase tracking-wider block mb-1">Allineamento</label>
+                        <select id="role-team-input" class="w-full input-medieval rounded-lg border border-wood-400/50 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blood-500">
+                            <option value="villager">Villaggio (Innocenti)</option>
+                            <option value="werewolf">Lupi (Oscurità)</option>
+                            <option value="solo">Solitario (Neutrale/Terzi)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-wood-400/30">
+                    <button type="button" onclick="closeRoleModal()" class="px-4 py-2 bg-transparent text-wood-600 dark:text-moon-400 border border-wood-400/50 text-xs font-bold uppercase rounded-lg hover:bg-black/5">Annulla</button>
+                    <button type="submit" class="px-5 py-2 bg-blood-600 hover:bg-blood-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-lg border border-blood-800 active:scale-95 transition-transform">Sigilla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pass & Play: Reveal List -->
+    <div id="reveal-list-modal" class="fixed inset-0 bg-night-950/95 backdrop-blur-lg z-[70] hidden flex flex-col transition-opacity duration-300 opacity-0">
+        <div class="p-6 pt-10 flex-1 overflow-y-auto custom-scrollbar flex flex-col items-center">
+            <h2 class="font-medieval text-3xl text-moon-300 mb-2 drop-shadow-lg text-center"><i class="fa-solid fa-user-secret text-magic-500 mb-2 block text-4xl"></i> Il Segreto Svelato</h2>
+            <p class="text-xs text-moon-400 text-center mb-8 max-w-sm">Passa il dispositivo al villaggio. Ognuno deve selezionare il proprio nome e leggere il proprio Fato in segreto.</p>
+            <div id="reveal-players-list" class="w-full max-w-sm space-y-3 pb-20"></div>
+        </div>
+        <div class="absolute bottom-0 w-full p-4 border-t border-white/5 bg-night-950/90 flex justify-center backdrop-blur-md">
+            <button onclick="closeRoleReveal()" class="px-6 py-3 bg-blood-800 hover:bg-blood-700 text-white font-medieval font-bold tracking-widest uppercase rounded-xl border border-blood-500 shadow-[0_0_15px_rgba(138,3,3,0.3)] active:scale-95 transition-transform w-full max-w-sm">Termina Rivelazione</button>
+        </div>
+    </div>
+
+    <!-- Pass & Play: Role Card -->
+    <div id="reveal-role-modal" class="fixed inset-0 bg-black z-[80] hidden flex-col items-center justify-center p-6 transition-opacity duration-300 opacity-0">
+        <div class="w-full max-w-sm flex flex-col h-full justify-between pb-8 pt-10">
+            
+            <!-- Intestazione fissa con Bottone Torna -->
+            <div class="flex items-center justify-between w-full mb-6 z-30 relative">
+                <button onclick="backToRevealList()" class="text-moon-400 text-xs font-bold uppercase tracking-wider hover:text-white transition-colors flex items-center gap-2 px-2 py-2">
+                    <i class="fa-solid fa-arrow-left"></i> Torna
+                </button>
+                <div class="text-center flex-1 pr-10">
+                    <h3 id="reveal-secret-name" class="font-medieval text-2xl font-bold text-white drop-shadow-lg truncate">Nome</h3>
+                </div>
+            </div>
+
+            <!-- Area Centrale Dinamica -->
+            <div class="flex-1 relative flex items-center justify-center w-full min-h-[300px]">
+                
+                <!-- Copertina -->
+                <div id="reveal-secret-cover-graphic" class="absolute flex flex-col items-center text-center space-y-6 transition-all duration-300 opacity-100 scale-100 z-10 w-full">
+                    <i class="fa-solid fa-eye-slash text-7xl text-moon-600 drop-shadow-md"></i>
+                    <p class="text-moon-400 text-sm italic border-t border-b border-white/10 py-3 px-4 w-full">Assicurati che nessuno stia guardando prima di rivelare il Grimorio.</p>
+                </div>
+
+                <!-- Carta Ruolo Segreta -->
+                <div id="reveal-secret-card" class="absolute w-full flex-col items-center justify-center bg-night-900 rounded-[2rem] p-6 sm:p-8 border shadow-2xl overflow-hidden transition-all duration-300 opacity-0 scale-95 pointer-events-none z-20 flex">
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+                    <div id="reveal-card-team-icon" class="text-6xl mb-6 relative z-10"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h2 id="reveal-card-role" class="font-medieval text-3xl font-bold text-white mb-2 text-center relative z-10 drop-shadow-md">Veggente</h2>
+                    <span id="reveal-card-team" class="text-[10px] uppercase tracking-widest mb-6 font-bold pb-3 border-b border-white/10 w-full text-center relative z-10">Fazione: Villaggio</span>
+                    <p id="reveal-card-desc" class="text-xs text-moon-200 text-center italic mb-6 leading-relaxed relative z-10 max-h-[120px] overflow-y-auto custom-scrollbar w-full">Ogni notte puoi...</p>
+                    <div class="bg-black/40 rounded-xl p-3 w-full border border-white/5 text-center relative z-10">
+                        <span class="text-[9px] uppercase tracking-wider opacity-60 block mb-1">Gesto del Master</span>
+                        <p id="reveal-card-gesture" class="text-xs text-moon-300 font-bold"><i class="fa-solid fa-hand-sparkles"></i> Segno: Tocca spalla</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottone Azione in basso -->
+            <div class="w-full mt-6 z-30 relative">
+                <button 
+                    onmousedown="showSecretRole(event)" onmouseup="hideSecretRole(event)" onmouseleave="hideSecretRole(event)"
+                    ontouchstart="showSecretRole(event)" ontouchend="hideSecretRole(event)" oncontextmenu="return false;"
+                    style="touch-action: none;"
+                    id="reveal-action-btn"
+                    class="w-full py-5 bg-magic-900 rounded-2xl font-bold uppercase tracking-widest text-white text-sm shadow-[0_0_30px_rgba(139,92,246,0.3)] border border-magic-400 active:scale-95 transition-all duration-300 select-none flex flex-col items-center gap-2">
+                    <i class="fa-solid fa-fingerprint text-3xl opacity-60"></i>
+                    <span>Tieni Premuto per Svelare</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed top-8 left-1/2 -translate-x-1/2 z-[60] w-11/12 max-w-sm pointer-events-none flex flex-col items-center gap-2"></div>
+
+    <script>
+        const defaultRolesDB = [
+            { id: "lupo", name: "Lupo Mannaro", gesture: "Pollice verso il basso", team: "werewolf", desc: "Ogni notte si sveglia con gli altri lupi e decide chi sbranare.", instances: 1, isActive: true },
+            { id: "villico", name: "Villico", gesture: "Nessun gesto", team: "villager", desc: "Non ha abilità notturne. Di giorno cerca di capire chi mente.", instances: 1, isActive: true },
+            { id: "veggente", name: "Veggente", gesture: "Indica l'occhio", team: "villager", desc: "Ogni notte indica un giocatore al Master per sapere se è Lupo o meno.", instances: 1, isActive: true },
+            { id: "medium", name: "Medium", gesture: "Mani a coppa", team: "villager", desc: "Ogni notte il Master gli indica se la persona linciata al rogo precedente era un Lupo.", instances: 1, isActive: true },
+            { id: "guardia", name: "Guardia del Corpo", gesture: "Braccia incrociate al petto", team: "villager", desc: "Ogni notte protegge un giocatore. Quel giocatore non può essere sbranato. Non può proteggere lo stesso due notti di fila.", instances: 1, isActive: true },
+            { id: "indemoniato", name: "Indemoniato", gesture: "Indici a corna", team: "werewolf", desc: "Sta con i Lupi, ma non li conosce e non si sveglia con loro. Il Veggente lo vede come Villico.", instances: 1, isActive: true },
+            { id: "massone", name: "Massone", gesture: "Stretta di mano finta", team: "villager", desc: "La prima notte si sveglia insieme agli altri Massoni per riconoscersi. Se attivi questo ruolo, ne usciranno 2.", instances: 2, isActive: true },
+            { id: "gufo", name: "Gufo", gesture: "Cerchi intorno agli occhi", team: "villager", desc: "Ogni notte sceglie un giocatore. Il giorno dopo quel giocatore va in nomination al rogo automaticamente.", instances: 1, isActive: false },
+            { id: "mitomane", name: "Mitomane", gesture: "Passa mano sul viso", team: "villager", desc: "Alla fine della seconda notte, sceglie un giocatore. Se è Lupo o Veggente, assume quel ruolo. Altrimenti resta Villico.", instances: 1, isActive: false },
+            { id: "cacciatore", name: "Cacciatore", gesture: "Finge fucile", team: "villager", desc: "Se viene sbranato o linciato, ha un ultimo colpo in canna per uccidere un altro giocatore immediatamente.", instances: 1, isActive: false },
+            { id: "criceto", name: "Criceto Mannaro", gesture: "Mani alle guance", team: "solo", desc: "Vince da solo se è vivo a fine partita. I Lupi non possono sbranarlo. Muore istantaneamente se indicato dal Veggente.", instances: 1, isActive: false },
+            { id: "sindaco", name: "Sindaco", gesture: "Alza una mano", team: "villager", desc: "Il suo voto al rogo vale doppio. Spesso assegnato a un ruolo esistente, qui considerato a sé stante.", instances: 1, isActive: false }
+        ];
+
+        let appState = {
+            phase: "night",
+            dayNumber: 1,
+            roles: JSON.parse(JSON.stringify(defaultRolesDB)),
+            players: [],
+            nightNotes: {},
+            dayVotes: {}
+        };
+
+        function initPWA() {
+            // Genera dinamicamente il manifest.json per aggirare la mancanza di file fisici
+            const manifest = {
+                name: "Lupus Master Grimorio",
+                short_name: "Grimorio",
+                display: "standalone",
+                background_color: "#070912",
+                theme_color: "#8a0303",
+                icons: [{
+                    src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🐺</text></svg>",
+                    sizes: "192x192",
+                    type: "image/svg+xml"
+                }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+            document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+            // Avvia un Service Worker base per consentire la classificazione come PWA e la cache
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => self.clients.claim());
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+                    });
+                `;
+                const swBlob = new Blob([swCode], { type: 'text/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {
+                    // Ignora silenziosamente: può fallire in protocollo file:// o iframe ristretti
+                });
+            }
+        }
+
+        window.onload = function() {
+            initPWA();
+            const saved = localStorage.getItem("lupus_master_state_v3");
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    appState = parsed;
+                    if(!appState.roles[0].hasOwnProperty("isActive")) {
+                        appState.roles = JSON.parse(JSON.stringify(defaultRolesDB));
+                    }
+                    appState.roles.forEach(r => {
+                        if (r.instances === undefined) {
+                            r.instances = (r.id === "massone") ? 2 : 1;
+                            delete r.minPlayers;
+                        }
+                    });
+                } catch(e) { console.error("Error loading state", e); }
+            }
+            applyThemeClasses();
+            renderAll();
+        };
+
+        function saveToLocalStorage() {
+            localStorage.setItem("lupus_master_state_v3", JSON.stringify(appState));
+        }
+
+        function applyThemeClasses() {
+            const body = document.getElementById("app-body");
+            const headerBg = document.getElementById("header-bg-fx");
+            const nav = document.getElementById("bottom-nav");
+            const navBg = nav.querySelector(".nav-bg-layer");
+            const phaseBtn = document.getElementById("phase-btn");
+            const title = document.getElementById("header-title");
+            const metaTheme = document.getElementById("meta-theme-color");
+            const activeColor = appState.phase === "night" ? "#a78bfa" : "#8a0303"; 
+            
+            if (appState.phase === "night") {
+                if(metaTheme) metaTheme.content = "#070912";
+                body.className = "theme-night h-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-magic-500 selection:text-white";
+                headerBg.className = "absolute inset-0 bg-gradient-to-b from-magic-900/40 to-transparent pointer-events-none transition-all duration-800";
+                nav.classList.add("border-night-800"); nav.classList.remove("border-wood-800/30");
+                navBg.className = "absolute inset-0 backdrop-blur-md bg-night-950/90 z-[-1] nav-bg-layer transition-colors duration-800";
+                
+                title.innerHTML = `<i class="fa-solid fa-moon text-moon-400 animate-pulse-slow"></i> Il Grimorio`;
+                title.className = "font-medieval text-2xl font-bold tracking-widest leading-none drop-shadow-md flex items-center gap-2 text-moon-300";
+                document.getElementById("header-subtitle").innerText = `Notte ${appState.dayNumber} - Il Risveglio`;
+                document.getElementById("header-subtitle").className = "text-xs uppercase tracking-widest font-semibold opacity-70 mt-1 text-magic-400";
+                
+                phaseBtn.className = "px-4 py-2.5 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(209,185,138,0.2)] transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 bg-parchment-200 text-wood-900 border border-wood-400 hover:bg-parchment-100 group";
+                phaseBtn.innerHTML = `<div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity rounded-xl"></div><i class="fa-solid fa-sun text-yellow-600"></i> Alba`;
+            } else {
+                if(metaTheme) metaTheme.content = "#d8c3a5";
+                body.className = "theme-day h-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-500 selection:text-white";
+                headerBg.className = "absolute inset-0 bg-gradient-to-b from-blood-900/10 to-transparent pointer-events-none transition-all duration-800";
+                nav.classList.remove("border-night-800"); nav.classList.add("border-wood-800/30");
+                navBg.className = "absolute inset-0 backdrop-blur-md bg-parchment-100/90 z-[-1] nav-bg-layer transition-colors duration-800";
+                
+                title.innerHTML = `<i class="fa-solid fa-sun text-blood-600 animate-[spin_20s_linear_infinite]"></i> La Piazza`;
+                title.className = "font-medieval text-2xl font-bold tracking-widest leading-none drop-shadow-md flex items-center gap-2 text-wood-900";
+                document.getElementById("header-subtitle").innerText = `Giorno ${appState.dayNumber} - Il Dibattito`;
+                document.getElementById("header-subtitle").className = "text-xs uppercase tracking-widest font-semibold opacity-70 mt-1 text-blood-600";
+                
+                phaseBtn.className = "px-4 py-2.5 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 bg-night-900 text-moon-300 border border-magic-900 hover:bg-night-800 group";
+                phaseBtn.innerHTML = `<div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity rounded-xl"></div><i class="fa-solid fa-moon text-magic-400"></i> Tramonto`;
+            }
+
+            const activeTab = document.querySelector("nav button.scale-110");
+            if(activeTab) {
+                activeTab.style.color = activeColor;
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appState, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Grimorio_Giorno${appState.dayNumber}_Backup.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("Grimorio sigillato e salvato nei file!", "day");
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    // Semplice controllo di sicurezza sul formato del file
+                    if (parsed.players && parsed.roles && parsed.hasOwnProperty('phase')) {
+                        appState = parsed;
+                        saveToLocalStorage();
+                        applyThemeClasses();
+                        renderAll();
+                        showToast("Magia antica! Grimorio restaurato con successo.", "night");
+                    } else {
+                        showToast("Il tomo risulta illegibile (Formato non valido).", "blood");
+                    }
+                } catch (err) {
+                    showToast("Magia oscura rilevata: Impossibile leggere il file.", "blood");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ""; // Resetta l'input per permettere re-importazioni dello stesso file
+        }
+
+        function togglePhase() {
+            const container = document.getElementById("dynamic-phase-container");
+            container.style.opacity = 0;
+            setTimeout(() => {
+                if (appState.phase === "night") {
+                    appState.phase = "day";
+                    showToast("Il sole sorge sul villaggio...", "day");
+                } else {
+                    appState.phase = "night";
+                    appState.dayNumber += 1;
+                    appState.dayVotes = {}; 
+                    showToast(`La Notte ${appState.dayNumber} avvolge tutto...`, "night");
+                }
+                applyThemeClasses();
+                renderAll();
+                container.style.opacity = 1;
+            }, 300);
+        }
+
+        function switchTab(tabKey) {
+            const activeColor = appState.phase === "night" ? "#a78bfa" : "#8a0303";
+            ["partita", "taverna", "tomi"].forEach(key => {
+                const sec = document.getElementById(`sec-${key}`);
+                const btn = document.getElementById(`tab-${key}`);
+                const indicator = btn.querySelector(".tab-indicator");
+                
+                if (key === tabKey) {
+                    sec.classList.remove("hidden");
+                    setTimeout(() => sec.classList.remove("opacity-0"), 50);
+                    btn.classList.remove("opacity-50");
+                    btn.classList.add("scale-110");
+                    btn.style.color = activeColor;
+                    indicator.classList.remove("opacity-0");
+                    
+                    const items = sec.querySelectorAll(".animate-fade-in-up");
+                    items.forEach((item, index) => {
+                        item.style.animation = "none";
+                        item.offsetHeight;
+                        item.style.animation = `fadeInUp 0.4s ease-out ${index * 0.1}s forwards`;
+                    });
+                } else {
+                    sec.classList.add("opacity-0");
+                    setTimeout(() => sec.classList.add("hidden"), 300);
+                    btn.classList.add("opacity-50");
+                    btn.classList.remove("scale-110");
+                    btn.style.color = "";
+                    indicator.classList.add("opacity-0");
+                }
+            });
+        }
+
+        function renderAll() {
+            renderDynamicPhase();
+            renderPlayersRoster();
+            renderRolesList();
+            saveToLocalStorage();
+        }
+
+        function renderDynamicPhase() {
+            const container = document.getElementById("dynamic-phase-container");
+            container.innerHTML = "";
+            const alivePlayers = appState.players.filter(p => !p.isDead);
+
+            if (appState.phase === "night") {
+                const activeRolesInGame = appState.roles.filter(role => {
+                    return appState.players.some(p => p.roleId === role.id && !p.isDead);
+                });
+
+                let html = `
+                    <div class="text-center mb-6 animate-fade-in-up">
+                        <i class="fa-solid fa-eye text-3xl text-magic-400 mb-2 drop-shadow-[0_0_10px_rgba(167,139,250,0.5)]"></i>
+                        <p class="font-medieval text-xs uppercase tracking-widest text-moon-300">Evocazioni Notturne</p>
+                    </div>
+                `;
+
+                if (activeRolesInGame.length === 0) {
+                    html += `<div class="glass-panel rounded-2xl p-6 text-center text-xs opacity-60 italic animate-fade-in-up">Nessuna entità speciale dorme in questo villaggio stanotte.</div>`;
+                } else {
+                    html += `<div class="space-y-4">`;
+                    activeRolesInGame.forEach((role, idx) => {
+                        const assignedPlayers = appState.players.filter(p => p.roleId === role.id && !p.isDead).map(p => p.name).join(", ");
+                        const noteValue = appState.nightNotes[role.id] || "";
+                        const isWolf = role.team === "werewolf";
+                        
+                        html += `
+                            <div class="glass-panel rounded-2xl p-4 relative overflow-hidden border-l-[3px] ${isWolf ? 'border-blood-600' : 'border-magic-500'} animate-fade-in-up stagger-item" style="animation-delay: ${idx * 0.1}s">
+                                <div class="absolute -right-4 -top-4 opacity-5 text-6xl">
+                                    <i class="fa-solid ${isWolf ? 'fa-paw' : 'fa-wand-magic-sparkles'}"></i>
+                                </div>
+                                <div class="flex items-start justify-between mb-3 border-b border-white/10 pb-2 relative z-10">
+                                    <div>
+                                        <span class="font-medieval text-base font-bold block ${isWolf ? 'text-blood-500' : 'text-magic-400'} drop-shadow-md">${idx + 1}. ${role.name}</span>
+                                        <span class="text-[10px] uppercase font-bold text-moon-300 tracking-wider">${assignedPlayers || 'Nessuno'}</span>
+                                    </div>
+                                    <div class="text-right max-w-[100px]">
+                                        <span class="text-[8px] uppercase tracking-wider block opacity-50 text-moon-400">Segno</span>
+                                        <span class="font-bold text-[10px] leading-tight text-moon-300"><i class="fa-solid fa-hand-sparkles text-magic-500/50"></i> ${role.gesture || '-'}</span>
+                                    </div>
+                                </div>
+                                <div class="relative z-10">
+                                    <input type="text" 
+                                        oninput="saveNightNote('${role.id}', this.value)" 
+                                        value="${noteValue.replace(/"/g, '&quot;')}"
+                                        placeholder="${isWolf ? 'Vittima prescelta...' : 'Azione o bersaglio...'}" 
+                                        class="w-full input-medieval rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-magic-500 transition-shadow bg-black/40">
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                const mortiNames = appState.players.filter(p => p.isDead).map(p => p.name).join(", ");
+                const mimatiNames = appState.players.filter(p => p.isMimicked).map(p => p.name).join(", ");
+                const protettiNames = appState.players.filter(p => p.isProtected).map(p => p.name).join(", ");
+
+                html += `
+                    <div class="glass-panel rounded-2xl p-4 mt-6 space-y-3 bg-night-900/50 border border-night-700 animate-fade-in-up" style="animation-delay: 0.5s">
+                        <h3 class="font-medieval text-sm font-bold flex items-center gap-2 text-moon-300 border-b border-white/5 pb-2">
+                            <i class="fa-solid fa-feather-pointed text-magic-500"></i> Registri della Notte
+                        </h3>
+                        <p class="text-[9px] text-moon-400 leading-tight">Applica gli effetti al risveglio prima di passare al Giorno.</p>
+                        
+                        <div class="space-y-2">
+                            <div>
+                                <label class="text-[9px] font-bold text-blood-500 uppercase tracking-wider block mb-1">Ritrovati Morti</label>
+                                <input type="text" id="day-input-morto" value="${mortiNames}" onchange="syncDayStatesFromInputs()" placeholder="es. Marco" class="w-full input-medieval rounded-lg border border-wood-400/30 px-3 py-2 text-xs focus:outline-none focus:border-blood-500 bg-black/40">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-[9px] font-bold text-magic-400 uppercase tracking-wider block mb-1">Mimati</label>
+                                    <input type="text" id="day-input-mimato" value="${mimatiNames}" onchange="syncDayStatesFromInputs()" placeholder="es. Luca" class="w-full input-medieval rounded-lg border border-wood-400/30 px-3 py-2 text-xs focus:outline-none bg-black/40">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-bold text-blue-400 uppercase tracking-wider block mb-1">Protetti (Guardia)</label>
+                                    <input type="text" id="day-input-protetto" value="${protettiNames}" onchange="syncDayStatesFromInputs()" placeholder="es. Anna" class="w-full input-medieval rounded-lg border border-wood-400/30 px-3 py-2 text-xs focus:outline-none bg-black/40">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = html;
+
+            } else {
+                let noteHtml = "";
+                const notesKeys = Object.keys(appState.nightNotes).filter(k => appState.nightNotes[k].trim() !== "");
+                if (notesKeys.length > 0) {
+                    noteHtml = `<div class="glass-panel rounded-2xl p-4 mb-5 space-y-2 bg-blood-900/5 border border-blood-800/20 shadow-inner animate-fade-in-up">
+                        <h3 class="font-medieval text-xs font-bold uppercase tracking-widest opacity-80 mb-3 flex items-center gap-2 border-b border-wood-400/30 pb-2"><i class="fa-solid fa-ear-listen text-blood-600"></i> Echi della Notte</h3>
+                        ${notesKeys.map(k => {
+                            const role = appState.roles.find(r => r.id === k);
+                            return `<div class="flex justify-between text-xs items-center bg-white/40 dark:bg-black/20 p-2 rounded-lg"><span class="font-bold capitalize text-wood-900">${role ? role.name : k}:</span> <span class="italic text-blood-600 font-semibold">${appState.nightNotes[k]}</span></div>`;
+                        }).join("")}
+                        <button onclick="clearNightNotes()" class="mt-3 w-full text-center text-[10px] uppercase tracking-widest border-t border-wood-400/30 pt-2 text-wood-600 hover:text-blood-600 transition-colors"><i class="fa-solid fa-eraser"></i> Pulisci appunti</button>
+                    </div>`;
+                } else {
+                    noteHtml = `<div class="text-center mb-5 animate-fade-in-up">
+                        <i class="fa-solid fa-sun text-3xl text-yellow-600 mb-2 drop-shadow-[0_0_10px_rgba(202,138,4,0.5)] animate-[spin_20s_linear_infinite]"></i>
+                        <p class="font-medieval text-xs uppercase tracking-widest text-wood-700">Il Villaggio Discute</p>
+                    </div>`;
+                }
+
+                let rogoHtml = `
+                    <div class="glass-panel rounded-2xl p-4 border border-blood-600/30 shadow-[0_4px_15px_rgba(138,3,3,0.05)] bg-red-50/20 animate-fade-in-up" style="animation-delay: 0.1s">
+                        <div class="flex items-center justify-between border-b border-blood-900/20 pb-2 mb-3">
+                            <h3 class="font-medieval text-base font-bold text-blood-900 flex items-center gap-2">
+                                <i class="fa-solid fa-fire-flame-curved text-blood-600 animate-pulse-slow"></i> Il Rogo
+                            </h3>
+                            <span class="text-[10px] font-bold bg-blood-100 text-blood-800 px-2 py-1 rounded-full">Vivi: ${alivePlayers.length}</span>
+                        </div>
+                        <div class="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar pr-1">
+                            ${alivePlayers.length === 0 ? '<p class="text-[11px] opacity-70 text-center py-4 italic">Il villaggio è vuoto.</p>' : 
+                              alivePlayers.map(p => {
+                                  const votes = appState.dayVotes[p.id] || 0;
+                                  return `
+                                  <div class="flex items-center justify-between bg-white/60 dark:bg-white/10 border border-wood-400/50 rounded-xl p-2 shadow-sm">
+                                      <span class="font-bold text-xs truncate max-w-[110px] pl-1 text-wood-900">${p.name}</span>
+                                      <div class="flex items-center gap-2">
+                                          <div class="flex items-center bg-parchment-200 rounded-lg border border-wood-400 overflow-hidden text-xs shadow-inner">
+                                              <button onclick="changeVote('${p.id}', -1)" class="px-3 py-1 hover:bg-wood-300 font-bold text-wood-800 active:bg-wood-400 transition-colors">-</button>
+                                              <span class="px-3 py-1 font-bold bg-white text-blood-600 min-w-[28px] text-center">${votes}</span>
+                                              <button onclick="changeVote('${p.id}', 1)" class="px-3 py-1 hover:bg-wood-300 font-bold text-wood-800 active:bg-wood-400 transition-colors">+</button>
+                                          </div>
+                                          <button onclick="executePlayer('${p.id}')" class="w-8 h-8 flex items-center justify-center bg-blood-600 hover:bg-blood-500 text-white rounded-lg shadow-md active:scale-95 transition-all" title="Condanna">
+                                              <i class="fa-solid fa-gavel text-[10px]"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                                  `;
+                              }).join("")
+                            }
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = noteHtml + rogoHtml;
+            }
+        }
+
+        function saveNightNote(roleId, value) {
+            appState.nightNotes[roleId] = value;
+            saveToLocalStorage();
+        }
+
+        function clearNightNotes() {
+            appState.nightNotes = {};
+            renderAll();
+            showToast("Appunti cancellati dal vento.", "day");
+        }
+
+        function changeVote(playerId, delta) {
+            if(!appState.dayVotes[playerId]) appState.dayVotes[playerId] = 0;
+            appState.dayVotes[playerId] += delta;
+            if(appState.dayVotes[playerId] < 0) appState.dayVotes[playerId] = 0;
+            renderDynamicPhase();
+            saveToLocalStorage();
+        }
+
+        function executePlayer(playerId) {
+            const player = appState.players.find(p => p.id === playerId);
+            if (player && confirm(`Le fiamme attendono. Sei sicuro di voler condannare ${player.name}?`)) {
+                player.isDead = true;
+                renderAll();
+                showToast(`${player.name} è arso sul rogo!`, "blood");
+            }
+        }
+
+        function syncDayStatesFromInputs() {
+            const mortiInput = document.getElementById("day-input-morto").value.split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+            const mimatiInput = document.getElementById("day-input-mimato").value.split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+            const protettiInput = document.getElementById("day-input-protetto").value.split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            appState.players.forEach(player => {
+                const lowerName = player.name.toLowerCase();
+                player.isDead = mortiInput.includes(lowerName);
+                player.isMimicked = mimatiInput.includes(lowerName);
+                player.isProtected = protettiInput.includes(lowerName);
+            });
+            saveToLocalStorage();
+            renderAll();
+        }
+
+        function renderPlayersRoster() {
+            const container = document.getElementById("players-roster-list");
+            document.getElementById("total-players-badge").innerText = appState.players.length;
+            container.innerHTML = "";
+
+            if (appState.players.length === 0) {
+                container.innerHTML = `<p class="text-xs opacity-60 text-center py-6 italic font-serif">La taverna è deserta. Evoca anime per iniziare.</p>`;
+                return;
+            }
+
+            appState.players.forEach((player, idx) => {
+                const item = document.createElement("div");
+                item.className = "flex items-center justify-between bg-black/5 dark:bg-white/5 p-2.5 rounded-xl border border-black/5 dark:border-white/5 animate-fade-in-up stagger-item";
+                item.style.animationDelay = `${(idx * 0.05)}s`;
+                
+                let optionsHtml = `<option value="">-- Seleziona Ruolo --</option>`;
+                appState.roles.forEach(r => {
+                    optionsHtml += `<option value="${r.id}" ${player.roleId === r.id ? "selected" : ""}>${r.name}</option>`;
+                });
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 w-full">
+                        <button onclick="deletePlayer('${player.id}')" class="w-6 h-6 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white transition-colors shrink-0">
+                            <i class="fa-solid fa-minus text-[10px]"></i>
+                        </button>
+                        <span class="text-xs font-bold w-[35%] truncate ${player.isDead ? 'line-through opacity-50 text-blood-600' : ''}">${player.name}</span>
+                        <select onchange="assignRoleToPlayer('${player.id}', this.value)" class="flex-1 input-medieval rounded-lg border border-wood-400/50 px-2 py-1.5 text-[10px] font-bold focus:outline-none focus:ring-1 focus:ring-blood-500 bg-white/50 dark:bg-black/50">
+                            ${optionsHtml}
+                        </select>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function assignRoleToPlayer(playerId, roleId) {
+            const player = appState.players.find(p => p.id === playerId);
+            if (player) {
+                player.roleId = roleId;
+                saveToLocalStorage();
+                if(appState.phase === "night") renderDynamicPhase();
+            }
+        }
+
+        function addSinglePlayer() {
+            const input = document.getElementById("single-player-name");
+            const name = input.value.trim();
+            if (!name) return;
+
+            if (!appState.players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                appState.players.push({
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 4),
+                    name: name,
+                    roleId: "",
+                    isDead: false,
+                    isProtected: false,
+                    isMimicked: false
+                });
+                input.value = "";
+                renderAll();
+                setTimeout(() => {
+                    const list = document.getElementById("players-roster-list");
+                    list.scrollTop = list.scrollHeight;
+                }, 100);
+            } else {
+                showToast("L'anima vaga già qui!", "blood");
+            }
+        }
+
+        function deletePlayer(id) {
+            appState.players = appState.players.filter(p => p.id !== id);
+            renderAll();
+        }
+
+        function clearAllPlayers() {
+            if (confirm("L'epurazione brucerà tutti gli abitanti. Procedere?")) {
+                appState.players = [];
+                renderAll();
+            }
+        }
+
+        function shuffleAndAssignRoles() {
+            const playersCount = appState.players.length;
+            if (playersCount === 0) return showToast("Evoca anime prima di assegnare i Fati!", "blood");
+
+            const activeRoles = appState.roles.filter(r => r.isActive);
+            const wolfRole = activeRoles.find(r => r.id === "lupo");
+            const villagerRole = activeRoles.find(r => r.id === "villico");
+
+            if (!wolfRole || !villagerRole) {
+                return showToast("Attiva almeno 'Lupo Mannaro' e 'Villico'!", "blood");
+            }
+
+            let deck = [];
+            let numWolves = Math.max(1, Math.floor(playersCount / 4));
+            if (playersCount <= 3 && playersCount > 0) numWolves = 1;
+            
+            for(let i=0; i<numWolves; i++) {
+                if (deck.length < playersCount) deck.push(wolfRole.id);
+            }
+
+            const specialRoles = activeRoles.filter(r => r.id !== "lupo" && r.id !== "villico");
+            
+            for (let i = specialRoles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [specialRoles[i], specialRoles[j]] = [specialRoles[j], specialRoles[i]];
+            }
+
+            let specialIdx = 0;
+            while (deck.length < playersCount && specialIdx < specialRoles.length) {
+                const roleToAdd = specialRoles[specialIdx];
+                const instancesNeeded = roleToAdd.instances || 1;
+                
+                if (playersCount - deck.length >= instancesNeeded) {
+                    for(let k=0; k<instancesNeeded; k++) {
+                        deck.push(roleToAdd.id);
+                    }
+                }
+                specialIdx++;
+            }
+
+            while(deck.length < playersCount) {
+                deck.push(villagerRole.id);
+            }
+
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+
+            appState.players.forEach((p, idx) => {
+                p.roleId = deck[idx];
+            });
+
+            revealedPlayers.clear();
+            renderAll();
+            showToast("I Fati hanno decretato il destino!", appState.phase);
+        }
+
+        let revealedPlayers = new Set();
+        let currentRevealPlayer = null;
+
+        function startRoleReveal() {
+            if (appState.players.length === 0) return showToast("La taverna è vuota!", "blood");
+            const missingRoles = appState.players.filter(p => !p.roleId);
+            if (missingRoles.length > 0) return showToast("Assegna i ruoli a tutti prima!", "blood");
+            
+            buildRevealList();
+            const modal = document.getElementById("reveal-list-modal");
+            modal.classList.remove("hidden");
+            setTimeout(() => modal.classList.remove("opacity-0"), 10);
+        }
+
+        function buildRevealList() {
+            const container = document.getElementById("reveal-players-list");
+            container.innerHTML = "";
+            
+            appState.players.forEach(p => {
+                const isViewed = revealedPlayers.has(p.id);
+                const btn = document.createElement("button");
+                
+                let btnClasses = "w-full p-4 rounded-xl font-medieval text-lg text-left flex justify-between items-center transition-all duration-300 border shadow-md active:scale-95 ";
+                if (isViewed) {
+                    btnClasses += "bg-night-900/50 text-moon-500 border-night-700 opacity-60";
+                } else {
+                    btnClasses += "bg-night-800 text-white border-moon-500/50 shadow-[0_4px_15px_rgba(0,0,0,0.5)]";
+                }
+                
+                btn.className = btnClasses;
+                btn.onclick = () => selectPlayerForReveal(p.id);
+                btn.innerHTML = `
+                    <span class="truncate pr-4">${p.name}</span>
+                    ${isViewed ? '<i class="fa-solid fa-eye text-green-500 text-sm" title="Visto"></i>' : '<i class="fa-solid fa-chevron-right text-moon-400"></i>'}
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectPlayerForReveal(playerId) {
+            currentRevealPlayer = appState.players.find(p => p.id === playerId);
+            if (!currentRevealPlayer) return;
+            
+            document.getElementById("reveal-secret-name").innerText = currentRevealPlayer.name;
+            const role = appState.roles.find(r => r.id === currentRevealPlayer.roleId);
+            document.getElementById("reveal-card-role").innerText = role ? role.name : "Ruolo Ignoto";
+            document.getElementById("reveal-card-desc").innerText = role ? (role.desc || "Nessun dettaglio aggiuntivo.") : "";
+            document.getElementById("reveal-card-gesture").innerHTML = `<i class="fa-solid fa-hand-sparkles"></i> Segno: ${role ? (role.gesture || "Nessun segno") : "-"}`;
+            
+            const teamSpan = document.getElementById("reveal-card-team");
+            const iconDiv = document.getElementById("reveal-card-team-icon");
+            const cardDiv = document.getElementById("reveal-secret-card");
+            
+            if (role && role.team === "werewolf") {
+                teamSpan.innerText = "Fazione: Lupi (Oscurità)";
+                teamSpan.className = "text-[10px] uppercase tracking-widest text-blood-400 mb-6 font-bold pb-3 border-b border-white/10 w-full text-center relative z-10";
+                iconDiv.innerHTML = '<i class="fa-solid fa-paw"></i>';
+                iconDiv.className = "text-6xl mb-6 text-blood-500 drop-shadow-[0_0_15px_rgba(138,3,3,0.8)] relative z-10";
+                cardDiv.className = "absolute w-full flex-col items-center justify-center bg-night-900 rounded-[2rem] p-6 sm:p-8 border border-blood-700 shadow-[0_0_60px_rgba(138,3,3,0.5)] overflow-hidden transition-all duration-300 opacity-0 scale-95 pointer-events-none z-20 flex";
+            } else if (role && role.team === "solo") {
+                teamSpan.innerText = "Fazione: Neutrale / Solitario";
+                teamSpan.className = "text-[10px] uppercase tracking-widest text-yellow-400 mb-6 font-bold pb-3 border-b border-white/10 w-full text-center relative z-10";
+                iconDiv.innerHTML = '<i class="fa-solid fa-mask"></i>';
+                iconDiv.className = "text-6xl mb-6 text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.8)] relative z-10";
+                cardDiv.className = "absolute w-full flex-col items-center justify-center bg-night-900 rounded-[2rem] p-6 sm:p-8 border border-yellow-700 shadow-[0_0_60px_rgba(202,138,4,0.3)] overflow-hidden transition-all duration-300 opacity-0 scale-95 pointer-events-none z-20 flex";
+            } else {
+                teamSpan.innerText = "Fazione: Villaggio (Innocenti)";
+                teamSpan.className = "text-[10px] uppercase tracking-widest text-magic-300 mb-6 font-bold pb-3 border-b border-white/10 w-full text-center relative z-10";
+                iconDiv.innerHTML = '<i class="fa-solid fa-house-chimney"></i>';
+                iconDiv.className = "text-6xl mb-6 text-magic-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.8)] relative z-10";
+                cardDiv.className = "absolute w-full flex-col items-center justify-center bg-night-900 rounded-[2rem] p-6 sm:p-8 border border-magic-600 shadow-[0_0_60px_rgba(139,92,246,0.4)] overflow-hidden transition-all duration-300 opacity-0 scale-95 pointer-events-none z-20 flex";
+            }
+
+            // Assicuriamoci che parta nascosto
+            hideSecretRole();
+
+            const modal = document.getElementById("reveal-role-modal");
+            modal.classList.remove("hidden");
+            setTimeout(() => modal.classList.remove("opacity-0"), 10);
+        }
+
+        function showSecretRole(e) {
+            if(e) e.preventDefault();
+            const cover = document.getElementById("reveal-secret-cover-graphic");
+            const card = document.getElementById("reveal-secret-card");
+            const btn = document.getElementById("reveal-action-btn");
+            
+            cover.classList.remove("opacity-100", "scale-100");
+            cover.classList.add("opacity-0", "scale-95");
+            
+            card.classList.remove("opacity-0", "scale-95");
+            card.classList.add("opacity-100", "scale-100");
+            
+            btn.querySelector("span").innerText = "Rilascia per Nascondere";
+            btn.classList.add("bg-blood-800", "border-blood-500", "shadow-[0_0_30px_rgba(138,3,3,0.4)]");
+            btn.classList.remove("bg-magic-900", "border-magic-400", "shadow-[0_0_30px_rgba(139,92,246,0.3)]");
+
+            if (currentRevealPlayer) revealedPlayers.add(currentRevealPlayer.id);
+        }
+
+        function hideSecretRole(e) {
+            if(e) e.preventDefault();
+            const cover = document.getElementById("reveal-secret-cover-graphic");
+            const card = document.getElementById("reveal-secret-card");
+            const btn = document.getElementById("reveal-action-btn");
+            
+            card.classList.remove("opacity-100", "scale-100");
+            card.classList.add("opacity-0", "scale-95");
+            
+            cover.classList.remove("opacity-0", "scale-95");
+            cover.classList.add("opacity-100", "scale-100");
+
+            if(btn) {
+                btn.querySelector("span").innerText = "Tieni Premuto per Svelare";
+                btn.classList.remove("bg-blood-800", "border-blood-500", "shadow-[0_0_30px_rgba(138,3,3,0.4)]");
+                btn.classList.add("bg-magic-900", "border-magic-400", "shadow-[0_0_30px_rgba(139,92,246,0.3)]");
+            }
+        }
+
+        function backToRevealList() {
+            buildRevealList();
+            const modal = document.getElementById("reveal-role-modal");
+            modal.classList.add("opacity-0");
+            setTimeout(() => modal.classList.add("hidden"), 300);
+        }
+
+        function closeRoleReveal() {
+            const modal = document.getElementById("reveal-list-modal");
+            modal.classList.add("opacity-0");
+            setTimeout(() => modal.classList.add("hidden"), 300);
+        }
+
+        function renderRolesList() {
+            const container = document.getElementById("roles-container");
+            container.innerHTML = "";
+
+            appState.roles.forEach((role, idx) => {
+                const card = document.createElement("div");
+                card.className = `glass-panel rounded-xl p-3 border-l-4 ${role.isActive ? (role.team === 'werewolf' ? 'border-blood-600' : 'border-magic-500') : 'border-gray-500 opacity-60'} transition-all duration-300 animate-fade-in-up stagger-item relative overflow-hidden`;
+                card.style.animationDelay = `${(idx * 0.05)}s`;
+                
+                let teamColorText = "text-moon-500";
+                let teamIcon = "fa-person";
+                if(role.team === "werewolf") { teamColorText = "text-blood-600"; teamIcon = "fa-paw"; }
+                if(role.team === "villager") { teamColorText = "text-magic-500"; teamIcon = "fa-house"; }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-medieval text-sm font-bold truncate ${role.isActive ? 'text-wood-900 dark:text-moon-300' : 'text-gray-500'}">${role.name}</span>
+                                <span title="Allineamento: ${role.team}" class="${teamColorText} text-[10px]"><i class="fa-solid ${teamIcon}"></i></span>
+                            </div>
+                            <p class="text-[9px] leading-snug opacity-80 line-clamp-2 italic text-wood-800 dark:text-moon-400 mb-1.5">${role.desc || 'Nessuna descrizione.'}</p>
+                            <div class="flex items-center gap-3 text-[8px] uppercase tracking-wider font-bold opacity-60">
+                                <span><i class="fa-solid fa-users"></i> Q.tà: ${role.instances || 1}</span>
+                                <span><i class="fa-solid fa-hand-sparkles"></i> ${role.gesture}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-end justify-between h-full gap-3">
+                            <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" class="sr-only toggle-checkbox" ${role.isActive ? "checked" : ""} onchange="toggleRoleActive('${role.id}', this.checked)">
+                                <div class="toggle-label block w-8 h-4 bg-gray-400 rounded-full transition-colors duration-300"></div>
+                                <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition-transform duration-300 ${role.isActive ? 'transform translate-x-4' : ''}"></div>
+                            </label>
+                            
+                            <div class="flex items-center gap-2">
+                                <button onclick="openRoleModal('${role.id}')" class="text-wood-500 hover:text-magic-500 transition-colors p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                                <button onclick="deleteRole('${role.id}')" class="text-wood-500 hover:text-blood-500 transition-colors p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleRoleActive(roleId, isChecked) {
+            const role = appState.roles.find(r => r.id === roleId);
+            if(role) {
+                if (!isChecked && (role.id === "lupo" || role.id === "villico")) {
+                    showToast("Non puoi disattivare le fondamenta del villaggio!", "blood");
+                    renderRolesList();
+                    return;
+                }
+                role.isActive = isChecked;
+                saveToLocalStorage();
+                renderRolesList(); 
+            }
+        }
+
+        function openRoleModal(roleId = null) {
+            document.getElementById("role-form").reset();
+            document.getElementById("modal-role-id").value = "";
+            document.getElementById("modal-role-title").innerHTML = roleId ? '<i class="fa-solid fa-scroll text-magic-500"></i> Modifica Patto' : '<i class="fa-solid fa-pen-nib text-blood-500"></i> Forgia Patto';
+
+            if (roleId) {
+                const role = appState.roles.find(r => r.id === roleId);
+                if (role) {
+                    document.getElementById("modal-role-id").value = role.id;
+                    document.getElementById("role-name-input").value = role.name;
+                    document.getElementById("role-gesture-input").value = role.gesture;
+                    document.getElementById("role-team-input").value = role.team;
+                    document.getElementById("role-desc-input").value = role.desc || "";
+                    document.getElementById("role-instances-input").value = role.instances || 1;
+                }
+            }
+            
+            const modal = document.getElementById("role-modal");
+            const content = document.getElementById("role-modal-content");
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modal.classList.remove("opacity-0", "pointer-events-none");
+                content.classList.remove("scale-95");
+                content.classList.add("scale-100");
+            }, 10);
+        }
+
+        function closeRoleModal() {
+            const modal = document.getElementById("role-modal");
+            const content = document.getElementById("role-modal-content");
+            
+            modal.classList.add("opacity-0", "pointer-events-none");
+            content.classList.remove("scale-100");
+            content.classList.add("scale-95");
+            
+            setTimeout(() => {
+                modal.classList.add("hidden");
+            }, 300);
+        }
+
+        function saveRole(e) {
+            e.preventDefault();
+            const id = document.getElementById("modal-role-id").value;
+            const name = document.getElementById("role-name-input").value.trim();
+            const gesture = document.getElementById("role-gesture-input").value.trim();
+            const team = document.getElementById("role-team-input").value;
+            const desc = document.getElementById("role-desc-input").value.trim();
+            const instances = parseInt(document.getElementById("role-instances-input").value) || 1;
+
+            if (id) {
+                const role = appState.roles.find(r => r.id === id);
+                if (role) {
+                    role.name = name; role.gesture = gesture; role.team = team;
+                    role.desc = desc; role.instances = instances;
+                }
+            } else {
+                const newId = name.toLowerCase().replace(/[^a-z0-9]/g, "_") + "_" + Date.now();
+                appState.roles.push({ id: newId, name, gesture, team, desc, instances, isActive: true });
+            }
+            closeRoleModal();
+            renderAll();
+        }
+
+        function deleteRole(roleId) {
+            if (roleId === "lupo" || roleId === "villico") {
+                return showToast("La natura impedisce di cancellare questi ruoli.", "blood");
+            }
+            if (confirm("Stracciare questa pagina per sempre dal Grimorio?")) {
+                appState.roles = appState.roles.filter(r => r.id !== roleId);
+                appState.players.forEach(p => { if(p.roleId === roleId) p.roleId = ""; });
+                renderAll();
+            }
+        }
+
+        function showToast(msg, type = "day") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            
+            let classes = "px-5 py-3 rounded-xl font-medieval text-[11px] font-bold uppercase tracking-widest shadow-2xl text-center transition-all duration-300 transform translate-y-[-20px] opacity-0 border backdrop-blur-md ";
+            
+            if (type === "day") {
+                classes += "bg-parchment-100/95 text-wood-900 border-wood-600";
+            } else if (type === "night") {
+                classes += "bg-night-900/95 text-moon-300 border-magic-900";
+            } else if (type === "blood") {
+                classes += "bg-blood-900/95 text-white border-blood-500 shadow-[0_4px_20px_rgba(138,3,3,0.5)]";
+            }
+            
+            toast.className = classes;
+            toast.innerHTML = msg;
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove("translate-y-[-20px]", "opacity-0");
+                toast.classList.add("translate-y-0", "opacity-100");
+            });
+
+            setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("translate-y-[-20px]", "opacity-0");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
