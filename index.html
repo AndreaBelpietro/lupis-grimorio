@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="it" class="h-full w-full bg-night-950">
+<html lang="it" class="h-full w-full bg-[#05070e]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#070912">
+    <meta name="theme-color" content="#05070e">
     <title>Lupus Master - Il Grimorio</title>
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts: Dark Academia / Medieval Theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=MedievalSharp&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -17,30 +24,27 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        medieval: ['Cinzel', 'serif'],
+                        gothic: ['"Cinzel Decorative"', 'serif'],
+                        medieval: ['MedievalSharp', 'Cinzel', 'serif'],
                         body: ['Lora', 'serif']
                     },
                     colors: {
-                        parchment: { 100: '#fdf5e6', 200: '#f4e8d3', 300: '#e3cfa1', 400: '#d1b98a', 800: '#5a4628', 900: '#3d2e18' },
-                        wood: { 600: '#5c3a21', 700: '#4a2f1d', 800: '#301d0f', 900: '#1c1007' },
-                        blood: { 500: '#990000', 600: '#800000', 700: '#5e0000', 900: '#3b0000' },
-                        night: { 800: '#1b2133', 900: '#111524', 950: '#070912' },
-                        moon: { 200: '#f3f4f6', 300: '#e5e7eb', 400: '#9ca3af' },
-                        magic: { 400: '#c084fc', 500: '#a855f7', 900: '#3b0764' }
+                        parchment: { 100: '#fcf6e8', 200: '#f3e4c8', 300: '#e2cc9e', 400: '#caa86b', 800: '#523a1a', 900: '#32210d' },
+                        wood: { 600: '#5c3a21', 700: '#432814', 800: '#2c180a', 900: '#1a0d05' },
+                        blood: { 500: '#b91c1c', 600: '#990000', 700: '#7f0000', 800: '#5c0000', 900: '#450000' },
+                        night: { 800: '#131b2e', 900: '#0c101c', 950: '#05070e' },
+                        gold: { 300: '#fef08a', 400: '#facc15', 500: '#d4af37', 600: '#b8860b', 700: '#855e0a' },
+                        magic: { 400: '#c084fc', 500: '#a855f7', 800: '#581c87', 950: '#2e0a4f' }
                     },
                     animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-in': 'fadeIn 0.25s ease-out forwards',
-                        'bounce-subtle': 'bounceSubtle 2s infinite'
+                        'candle-flicker': 'candleFlicker 3s infinite ease-in-out'
                     },
                     keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(6px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        bounceSubtle: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-3px)' }
+                        candleFlicker: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(212, 175, 55, 0.25), inset 0 0 10px rgba(0,0,0,0.8)' },
+                            '25%': { boxShadow: '0 0 22px rgba(212, 175, 55, 0.38), inset 0 0 12px rgba(0,0,0,0.85)' },
+                            '50%': { boxShadow: '0 0 12px rgba(212, 175, 55, 0.18), inset 0 0 8px rgba(0,0,0,0.75)' },
+                            '75%': { boxShadow: '0 0 25px rgba(212, 175, 55, 0.42), inset 0 0 14px rgba(0,0,0,0.9)' }
                         }
                     }
                 }
@@ -49,127 +53,157 @@
     </script>
 
     <style>
+        :root {
+            --safe-top: max(1.25rem, env(safe-area-inset-top, 24px));
+            --safe-bottom: max(1rem, env(safe-area-inset-bottom, 20px));
+        }
+
         html, body {
             height: 100%;
             height: 100dvh;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #070912;
+            background-color: #05070e;
         }
+
         body {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
             touch-action: manipulation;
-            transition: background 0.5s ease, color 0.5s ease;
+            transition: background-color 0.6s ease, color 0.6s ease;
         }
+
         input, textarea, select {
             -webkit-user-select: text;
             user-select: text;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { border-radius: 4px; }
-        
-        /* Tema Giorno */
+
+        /* TEMA GIORNO (Gothic Parchment & High Contrast Wood) */
         .theme-day {
-            background: radial-gradient(circle at center, #f4e8d3 0%, #cbb490 100%);
-            color: #2c1f0f;
+            background: radial-gradient(circle at 50% 30%, #f3e4c8 0%, #caa86b 70%, #523a1a 100%);
+            color: #1a0d05;
         }
-        .theme-day .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(90, 70, 40, 0.4); }
+        .theme-day .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(82, 58, 26, 0.6); }
         .theme-day .glass-panel {
-            background: rgba(253, 245, 230, 0.88);
-            border: 2px solid #cbb285;
-            box-shadow: inset 0 0 12px rgba(90, 70, 40, 0.12), 0 6px 16px rgba(0,0,0,0.1);
-            backdrop-filter: blur(8px);
+            background: rgba(252, 246, 232, 0.95);
+            border: 2px solid #8c6839;
+            box-shadow: inset 0 0 15px rgba(82, 58, 26, 0.15), 0 8px 24px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
         }
         .theme-day .input-medieval {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid #bda377;
-            color: #2c1f0f;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #8c6839;
+            color: #1a0d05;
         }
-        
-        /* Tema Notte */
+
+        /* TEMA NOTTE (Pitch Black & Blood Moon) */
         .theme-night {
-            background: radial-gradient(circle at top, #1b2033 0%, #070912 100%);
-            color: #f3f4f6;
+            background: radial-gradient(circle at 50% 20%, #131b2e 0%, #0c101c 65%, #05070e 100%);
+            color: #e2e8f0;
         }
         .theme-night .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.4); }
         .theme-night .glass-panel {
-            background: rgba(17, 21, 36, 0.88);
-            border: 1px solid #2e3650;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 8px 20px rgba(0,0,0,0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(12, 16, 28, 0.92);
+            border: 1px solid #2a3550;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
         }
         .theme-night .input-medieval {
-            background: rgba(10, 13, 22, 0.8);
-            border: 1px solid #374151;
-            color: #f3f4f6;
+            background: rgba(5, 7, 14, 0.85);
+            border: 1px solid #2a3550;
+            color: #e2e8f0;
         }
 
-        .safe-pad-top {
-            padding-top: max(1.25rem, env(safe-area-inset-top, 24px)) !important;
+        /* Effetti Bordo Inciso Gotico */
+        .gothic-border {
+            position: relative;
         }
-        .safe-pad-bottom {
-            padding-bottom: max(1rem, env(safe-area-inset-bottom, 20px)) !important;
+        .gothic-border::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            pointer-events: none;
+            border-radius: inherit;
         }
+
+        /* Effetto 3D Card Flip */
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .safe-pad-top { padding-top: var(--safe-top) !important; }
+        .safe-pad-bottom { padding-bottom: var(--safe-bottom) !important; }
     </style>
 </head>
-<body id="app-body" class="theme-night h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-500 selection:text-white">
+<body id="app-body" class="theme-night h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-600 selection:text-white">
 
-    <!-- Container Smartphone / Desktop -->
     <div class="w-full max-w-md h-[100dvh] sm:h-[95vh] sm:rounded-[36px] border-0 sm:border-[8px] sm:border-wood-900 shadow-2xl flex flex-col relative overflow-hidden bg-transparent transition-all duration-500">
 
-        <!-- Header superiore con safe-pad-top -->
+        <!-- Header Superiore -->
         <header id="main-header" class="safe-pad-top pb-3 px-4 flex items-center justify-between shrink-0 z-20 border-b transition-colors duration-500 relative overflow-hidden">
             <div class="flex flex-col relative z-10">
-                <h1 class="font-medieval text-lg sm:text-xl font-bold tracking-widest leading-none drop-shadow-md flex items-center gap-2" id="header-title">
-                    <i class="fa-solid fa-moon text-moon-400"></i> Il Grimorio
+                <h1 class="font-gothic text-lg sm:text-xl font-black tracking-widest leading-none drop-shadow-md flex items-center gap-2 text-gold-400" id="header-title">
+                    <i class="fa-solid fa-moon text-gold-500"></i> Il Grimorio
                 </h1>
-                <span class="text-[10px] uppercase tracking-wider font-semibold opacity-80 mt-1" id="header-subtitle">Fase Notturna</span>
+                <span class="font-medieval text-[10px] uppercase tracking-widest opacity-80 mt-1 text-gold-600" id="header-subtitle">Fase Notturna</span>
             </div>
 
-            <!-- Pulsante Cambio Fase -->
-            <button onclick="togglePhase()" id="phase-btn" class="px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider border-2 shadow-lg transition transform active:scale-95 flex items-center gap-2">
-                <!-- Inserito da JS -->
+            <!-- Pulsante Cambio Fase (Alba / Tramonto) -->
+            <button onclick="togglePhase()" id="phase-btn" class="px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider border-2 shadow-xl transition transform active:scale-95 flex items-center gap-2 gothic-border">
+                <!-- Inserito via JS -->
             </button>
         </header>
 
-        <!-- Contenuto scrollabile centrale -->
         <main class="flex-1 overflow-y-auto custom-scrollbar p-3.5 space-y-4 pb-6 relative z-10">
 
-            <!-- TAB 1: LA CRONACA (GIORNO / NOTTE DINAMICO) -->
-            <section id="sec-partita" class="space-y-4 animate-fade-in">
+            <!-- TAB 1: LA CRONACA (NOTTE / GIORNO) -->
+            <section id="sec-partita" class="space-y-4">
                 <div id="dynamic-phase-container"></div>
             </section>
 
-            <!-- TAB 2: LA TAVERNA (GIOCATORI) -->
-            <section id="sec-taverna" class="hidden space-y-4 animate-fade-in">
+            <!-- TAB 2: LA TAVERNA (Abitanti e Portale) -->
+            <section id="sec-taverna" class="hidden space-y-4">
                 
-                <!-- PORTALE UNICO RIVELAZIONE SEGRETA -->
-                <div class="glass-panel rounded-2xl p-4 space-y-3 border-2 border-magic-500/60 bg-magic-950/20 text-center shadow-lg">
+                <!-- PORTALE SPECCHIO DEI FATI -->
+                <div class="glass-panel rounded-2xl p-4 space-y-3 border-2 border-gold-600/60 text-center shadow-2xl gothic-border animate-candle-flicker">
                     <div class="flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles text-magic-400 text-lg animate-pulse"></i>
-                        <h2 class="font-medieval text-sm font-bold tracking-wider text-moon-200 uppercase">Specchio dei Fati</h2>
+                        <i class="fa-solid fa-wand-magic-sparkles text-gold-500 text-lg"></i>
+                        <h2 class="font-gothic text-sm font-bold tracking-widest text-wood-900 dark:text-gold-300 uppercase">Specchio dei Fati</h2>
                     </div>
-                    <p class="text-[11px] opacity-80 leading-relaxed">
-                        Passa il dispositivo al giocatore interessato per fargli scoprire in segreto il proprio ruolo.
+                    <p class="text-[11px] opacity-85 leading-relaxed font-body">
+                        Passa il dispositivo al giocatore interessato per fargli scoprire in segreto il proprio destino.
                     </p>
-                    <button onclick="openSecretPortalModal()" class="w-full py-3 bg-gradient-to-r from-purple-800 to-indigo-900 hover:from-purple-700 hover:to-indigo-800 text-white font-medieval font-bold text-xs uppercase tracking-widest rounded-xl border border-magic-400 shadow-xl active:scale-95 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-eye text-magic-300"></i> Rivelazione Segreta (Passa Telefono)
+                    <button onclick="openSecretPortalModal()" class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-indigo-900 to-purple-950 hover:from-purple-900 hover:to-indigo-800 text-gold-300 font-medieval font-bold text-xs uppercase tracking-widest rounded-xl border-2 border-gold-500 shadow-2xl active:scale-95 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-eye text-gold-400"></i> Rivelazione Segreta (Passa Telefono)
                     </button>
                 </div>
 
                 <!-- Aggiunta Giocatori -->
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
-                    <h2 class="font-medieval text-sm font-bold flex items-center gap-2 text-blood-500 dark:text-moon-200">
+                    <h2 class="font-medieval text-xs font-bold flex items-center gap-2 text-wood-900 dark:text-gold-400 uppercase tracking-wider">
                         <i class="fa-solid fa-user-plus"></i> Nuovi Viandanti
                     </h2>
                     
                     <div class="flex gap-2">
-                        <input type="text" id="single-player-name" onkeydown="if(event.key==='Enter') addSinglePlayer()" placeholder="Nome dell'abitante..." class="flex-1 input-medieval rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blood-500">
-                        <button onclick="addSinglePlayer()" class="px-4 py-2 bg-blood-600 hover:bg-blood-700 text-white text-xs font-bold rounded-xl shadow border border-blood-900 active:scale-95 transition">
+                        <input type="text" id="single-player-name" onkeydown="if(event.key==='Enter') addSinglePlayer()" placeholder="Nome dell'abitante..." class="flex-1 input-medieval rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gold-500">
+                        <button onclick="addSinglePlayer()" class="px-4 py-2 bg-gold-600 hover:bg-gold-500 text-night-950 font-medieval text-xs font-bold rounded-xl shadow border border-gold-300 active:scale-95 transition">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
@@ -178,196 +212,128 @@
                 <!-- Lista Popolazione -->
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-black/10 dark:border-white/10 pb-2.5 gap-2">
-                        <h2 class="font-medieval text-sm font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-users text-amber-500"></i> Popolazione (<span id="total-players-badge">0</span>)
+                        <h2 class="font-medieval text-xs font-bold flex items-center gap-2 text-wood-900 dark:text-gold-400 uppercase tracking-wider">
+                            <i class="fa-solid fa-users text-gold-600"></i> Popolazione (<span id="total-players-badge">0</span>)
                         </h2>
                         <div class="flex items-center gap-2 shrink-0">
-                            <button onclick="shuffleAndAssignRoles()" class="px-3 py-1.5 bg-wood-800 hover:bg-wood-700 text-parchment-100 text-[10px] font-bold rounded-lg border border-wood-600 active:scale-95 shadow transition flex items-center gap-1.5">
+                            <button onclick="shuffleAndAssignRoles()" class="px-3 py-1.5 bg-gold-600 hover:bg-gold-500 text-night-950 text-[10px] font-medieval font-bold uppercase rounded-lg border border-gold-300 active:scale-95 shadow transition flex items-center gap-1.5">
                                 <i class="fa-solid fa-dice"></i> Assegna Fati
                             </button>
-                            <button onclick="confirmClearAllPlayers()" class="px-2.5 py-1.5 bg-blood-900/40 hover:bg-blood-900/80 text-red-300 text-[10px] font-bold rounded-lg border border-blood-500/40 active:scale-95 transition">
+                            <button onclick="confirmClearAllPlayers()" class="px-2.5 py-1.5 bg-blood-900/80 hover:bg-blood-800 text-red-100 text-[10px] font-medieval font-bold uppercase rounded-lg border border-blood-500/50 active:scale-95 transition">
                                 Epurazione
                             </button>
                         </div>
                     </div>
 
                     <div id="players-roster-list" class="space-y-2 pt-1">
-                        <!-- Generata da JS -->
+                        <!-- Generata via JS -->
                     </div>
                 </div>
             </section>
 
-            <!-- TAB 3: I TOMI SEGRETI (RUOLI & ARCHIVIO FILE) -->
-            <section id="sec-tomi" class="hidden space-y-4 animate-fade-in">
-                
-                <!-- Gestione File Backup -->
-                <div class="glass-panel rounded-2xl p-4 space-y-3">
-                    <h2 class="font-medieval text-sm font-bold flex items-center gap-2 text-magic-400">
-                        <i class="fa-solid fa-floppy-disk"></i> Archivio del Master
-                    </h2>
-                    <p class="text-[11px] opacity-80 leading-relaxed">
-                        Salva o carica i dati della partita nei tuoi File locali (iOS/Mac/Android). Funziona 100% offline.
-                    </p>
-                    <div class="grid grid-cols-2 gap-2 pt-1">
-                        <button onclick="exportGameStateToFile()" class="px-3 py-2 bg-wood-800 text-parchment-100 text-xs font-bold rounded-xl border border-wood-600 shadow flex items-center justify-center gap-2 active:scale-95 transition">
-                            <i class="fa-solid fa-download"></i> Esporta File
-                        </button>
-                        <label class="px-3 py-2 bg-magic-900 text-white text-xs font-bold rounded-xl border border-magic-500 shadow flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition">
-                            <i class="fa-solid fa-upload"></i> Importa File
-                            <input type="file" id="import-file-input" accept=".json" onchange="importGameStateFromFile(event)" class="hidden">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Gestione Ruoli -->
+            <!-- TAB 3: I TOMI SEGRETI -->
+            <section id="sec-tomi" class="hidden space-y-4">
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
                     <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-2">
-                        <h2 class="font-medieval text-sm font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-masks-theater text-magic-400"></i> Indice dei Ruoli
+                        <h2 class="font-medieval text-xs font-bold flex items-center gap-2 text-wood-900 dark:text-gold-400 uppercase tracking-wider">
+                            <i class="fa-solid fa-masks-theater text-purple-600 dark:text-magic-400"></i> Indice dei Ruoli Attivi
                         </h2>
-                        <button onclick="openRoleModal()" class="px-3 py-1.5 bg-magic-900 hover:bg-magic-800 text-white text-[10px] font-bold rounded-lg border border-magic-500 active:scale-95 shadow transition">
-                            + Crea Ruolo
-                        </button>
                     </div>
 
-                    <p class="text-[11px] opacity-80 leading-tight">
-                        Attiva i ruoli che desideri includere. Il fato (tasto 'Assegna') baserà il mazzo sui ruoli attivi e sulle quantità minime configurate.
+                    <p class="text-[11px] opacity-85 leading-relaxed font-body text-wood-900 dark:text-parchment-200">
+                        Attiva o disattiva i ruoli che desideri includere. L'assegnazione automatica (tasto 'Assegna Fati') userà esclusivamente i ruoli selezionati e la quantità stabilita.
                     </p>
 
                     <div id="roles-container" class="space-y-2.5 pt-2">
-                        <!-- Cards Ruoli generate da JS -->
+                        <!-- Cards Ruoli generate via JS -->
                     </div>
                 </div>
             </section>
 
         </main>
 
-        <!-- Navigation bar ancorata in basso -->
+        <!-- Bottom Navigation Bar -->
         <nav id="bottom-nav" class="safe-pad-bottom pt-2.5 px-3 flex items-center justify-around shrink-0 z-20 border-t transition-colors duration-500 w-full">
-            <button onclick="switchTab('partita')" id="tab-partita" class="flex flex-col items-center gap-1 px-3 py-1 scale-105 transition-all text-moon-300">
+            <button onclick="switchTab('partita')" id="tab-partita" class="flex flex-col items-center gap-1 px-3 py-1 scale-105 transition-all text-gold-400">
                 <i class="fa-solid fa-scroll text-lg drop-shadow"></i>
-                <span class="font-medieval text-[10px] font-bold uppercase tracking-wider">La Cronaca</span>
+                <span class="font-medieval text-[10px] font-bold uppercase tracking-widest">La Cronaca</span>
             </button>
             <button onclick="switchTab('taverna')" id="tab-taverna" class="flex flex-col items-center gap-1 px-3 py-1 opacity-60 hover:opacity-100 transition-all">
                 <i class="fa-solid fa-users text-lg"></i>
-                <span class="font-medieval text-[10px] font-bold uppercase tracking-wider">La Taverna</span>
+                <span class="font-medieval text-[10px] font-bold uppercase tracking-widest">La Taverna</span>
             </button>
             <button onclick="switchTab('tomi')" id="tab-tomi" class="flex flex-col items-center gap-1 px-3 py-1 opacity-60 hover:opacity-100 transition-all">
                 <i class="fa-solid fa-book-skull text-lg"></i>
-                <span class="font-medieval text-[10px] font-bold uppercase tracking-wider">I Tomi</span>
+                <span class="font-medieval text-[10px] font-bold uppercase tracking-widest">I Tomi</span>
             </button>
         </nav>
 
     </div>
 
-    <!-- Modal Modifica / Nuovo Ruolo (Alta Leggibilità) -->
-    <div id="role-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-panel rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl border-2 border-amber-500/60 bg-night-900 text-moon-100">
-            <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                <h3 id="modal-role-title" class="font-medieval text-base font-bold uppercase tracking-wider text-amber-300">Forgia un Ruolo</h3>
-                <button onclick="closeRoleModal()" class="text-moon-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <form id="role-form" onsubmit="saveRole(event)" class="space-y-3.5">
-                <input type="hidden" id="modal-role-id">
-                
-                <div>
-                    <label class="text-[11px] text-amber-300 font-bold uppercase tracking-wider block mb-1">Nome Ruolo</label>
-                    <input type="text" id="role-name-input" required placeholder="es. Veggente" class="w-full input-medieval rounded-xl border border-gray-600 px-3 py-2 text-xs focus:outline-none focus:border-amber-400 bg-black/60 text-white font-semibold">
-                </div>
-                
-                <div>
-                    <label class="text-[11px] text-amber-300 font-bold uppercase tracking-wider block mb-1">Segno Fisico (Tocco Tattile Notturno)</label>
-                    <input type="text" id="role-gesture-input" required placeholder="es. Due tocchi sulla spalla" class="w-full input-medieval rounded-xl border border-gray-600 px-3 py-2 text-xs focus:outline-none focus:border-amber-400 bg-black/60 text-white font-semibold">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="text-[11px] text-amber-300 font-bold uppercase tracking-wider block mb-1">Fazione</label>
-                        <select id="role-team-input" class="w-full input-medieval rounded-xl border border-gray-600 px-2.5 py-2 text-xs focus:outline-none focus:border-amber-400 bg-black/80 text-white font-bold">
-                            <option value="villager">Villaggio</option>
-                            <option value="werewolf">Lupi</option>
-                            <option value="solo">Solitario</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-amber-300 font-bold uppercase tracking-wider block mb-1">Quantità in Partita</label>
-                        <input type="number" id="role-min-count-input" min="1" max="10" value="1" required class="w-full input-medieval rounded-xl border border-gray-600 px-3 py-2 text-xs focus:outline-none focus:border-amber-400 bg-black/80 text-white font-bold">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="text-[11px] text-amber-300 font-bold uppercase tracking-wider block mb-1">Descrizione & Potere</label>
-                    <textarea id="role-desc-input" rows="3" placeholder="Spiega cosa fa questo ruolo durante il gioco..." class="w-full input-medieval rounded-xl border border-gray-600 px-3 py-2 text-xs focus:outline-none focus:border-amber-400 bg-black/60 text-white font-normal resize-none leading-relaxed"></textarea>
-                </div>
-
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeRoleModal()" class="px-3.5 py-2 bg-gray-800 text-moon-300 border border-gray-600 text-xs font-bold rounded-xl">Annulla</button>
-                    <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-night-950 font-medieval font-bold text-xs rounded-xl shadow-md border border-amber-300 active:scale-95 transition">Salva Ruolo</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Unificato Portale Schermata Segreta -->
-    <div id="reveal-portal-modal" class="fixed inset-0 bg-black/95 backdrop-blur-lg z-50 hidden flex flex-col justify-between p-6 text-white text-center safe-pad-top safe-pad-bottom">
+    <!-- Modale Rivelazione Segreta -->
+    <div id="reveal-portal-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between p-6 text-white text-center safe-pad-top safe-pad-bottom">
         
-        <div class="flex justify-between items-center w-full">
-            <span class="text-xs uppercase tracking-widest text-magic-400 font-medieval"><i class="fa-solid fa-user-shield mr-1"></i> Portale dei Fati</span>
-            <button onclick="closeSecretPortalModal()" class="px-3.5 py-1.5 bg-red-900/80 text-white font-bold text-xs uppercase tracking-wider rounded-xl border border-red-500 shadow active:scale-95">
+        <div class="flex justify-between items-center w-full max-w-xs mx-auto">
+            <span class="text-xs uppercase tracking-widest text-gold-400 font-medieval"><i class="fa-solid fa-user-shield mr-1"></i> Specchio dei Fati</span>
+            <button onclick="closeSecretPortalModal()" class="px-3.5 py-1.5 bg-blood-900/80 text-white font-medieval font-bold text-xs uppercase tracking-wider rounded-xl border border-blood-500 shadow active:scale-95">
                 <i class="fa-solid fa-xmark mr-1"></i> Chiudi
             </button>
         </div>
 
         <div class="my-auto space-y-4 max-w-xs mx-auto w-full">
-            
-            <!-- Selezione Giocatore -->
             <div id="reveal-select-step" class="space-y-3">
-                <label class="text-xs font-bold text-amber-300 uppercase tracking-wider block">Chi sta guardando lo schermo?</label>
-                <select id="portal-player-select" onchange="onPortalPlayerSelected()" class="w-full bg-night-900 text-white border-2 border-magic-500 rounded-xl p-3 text-xs font-bold focus:outline-none">
+                <label class="text-xs font-medieval font-bold text-gold-300 uppercase tracking-widest block">Chi sta osservando lo specchio?</label>
+                <select id="portal-player-select" onchange="onPortalPlayerSelected()" class="w-full bg-night-900 text-gold-300 border-2 border-gold-500/60 rounded-xl p-3 text-xs font-medieval font-bold focus:outline-none">
                     <option value="">-- Seleziona Abitante --</option>
                 </select>
             </div>
 
-            <!-- Card del Ruolo (Inizialmente nascosta) -->
-            <div id="reveal-card-content" class="glass-panel p-5 rounded-3xl border-2 border-magic-400 bg-night-900 hidden space-y-3 transition-all duration-300">
-                <div id="reveal-team-badge" class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-magic-900 text-magic-300">
-                    -- Fazione --
+            <div id="reveal-card-container" class="w-full h-64 perspective-1000 hidden">
+                <div id="flip-card-element" class="flip-card-inner w-full h-full relative rounded-3xl gothic-border shadow-2xl">
+                    <div class="flip-card-front absolute inset-0 bg-gradient-to-b from-purple-950 via-night-900 to-black border-2 border-gold-500 rounded-3xl flex flex-col items-center justify-center p-6 space-y-3">
+                        <i class="fa-solid fa-eye text-4xl text-gold-400 animate-pulse"></i>
+                        <span class="font-gothic text-sm font-bold text-gold-300 tracking-widest">LUPUS MASTER</span>
+                        <p class="text-[10px] text-parchment-300 opacity-70 italic font-body">Tieni premuto il sigillo per voltare la carta</p>
+                    </div>
+
+                    <div class="flip-card-back absolute inset-0 bg-night-900 border-2 border-gold-400 rounded-3xl p-5 flex flex-col justify-between text-center space-y-2">
+                        <div id="reveal-team-badge" class="inline-block px-3 py-1 rounded-full text-[9px] font-medieval font-bold uppercase tracking-widest bg-gold-950 text-gold-300 border border-gold-600/40 self-center">
+                            -- FAZIONE --
+                        </div>
+                        
+                        <div>
+                            <h2 id="reveal-role-name" class="font-gothic text-xl font-bold text-gold-400 capitalize">-- NOME RUOLO --</h2>
+                            <p id="reveal-role-desc" class="text-[11px] text-parchment-200 italic leading-relaxed pt-2 font-body">-- Descrizione --</p>
+                        </div>
+
+                        <span class="text-[9px] uppercase tracking-widest text-gold-500 font-medieval font-bold opacity-80">Rilascia per nascondere</span>
+                    </div>
                 </div>
-                <h2 id="reveal-role-name" class="font-medieval text-2xl font-bold text-amber-300 capitalize">-- Nome Ruolo --</h2>
-                
-                <div class="p-3 bg-black/50 rounded-xl border border-white/10 text-left space-y-1">
-                    <span class="text-[9px] uppercase tracking-wider text-magic-300 block font-bold"><i class="fa-solid fa-hand-sparkles mr-1"></i> Segno Fisico Master</span>
-                    <p id="reveal-role-gesture" class="text-xs font-bold text-parchment-200">-- Segno --</p>
-                </div>
-                
-                <p id="reveal-role-desc" class="text-xs opacity-85 italic leading-relaxed pt-1">-- Descrizione --</p>
             </div>
 
-            <p id="reveal-instruction" class="text-xs opacity-60 italic hidden">Tieni premuto il pulsante sottostante per rivelare il tuo destino.</p>
+            <p id="reveal-instruction" class="text-xs text-parchment-300 opacity-70 italic hidden font-body">Tieni premuto il pulsante sottostante per rivelare il tuo destino.</p>
         </div>
 
-        <!-- Tasto Tieni Premuto -->
         <div class="w-full max-w-xs mx-auto pb-2">
             <button id="hold-reveal-btn" disabled
                     onmousedown="startHoldReveal()" onmouseup="endHoldReveal()" 
                     ontouchstart="startHoldReveal(event)" ontouchend="endHoldReveal(event)"
-                    class="w-full py-3.5 bg-gradient-to-r from-purple-900 to-indigo-950 text-gray-400 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gray-700 shadow-2xl transition-all select-none opacity-50 cursor-not-allowed">
-                <i class="fa-solid fa-eye mr-2"></i> Tieni Premuto
+                    class="w-full py-4 bg-gradient-to-r from-purple-950 via-night-900 to-purple-950 text-gray-500 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gray-800 shadow-2xl transition-all select-none opacity-50 cursor-not-allowed">
+                <i class="fa-solid fa-hand-pointer mr-2"></i> Tieni Premuto Per Rivelare
             </button>
         </div>
     </div>
 
-    <!-- Modal Conferma Medievale -->
-    <div id="confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-panel rounded-2xl max-w-xs w-full p-5 space-y-4 text-center shadow-2xl border-2 border-blood-600 bg-night-900 text-moon-300">
-            <i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-3xl text-blood-500 animate-bounce-subtle"></i>
-            <h3 id="confirm-title" class="font-medieval text-base font-bold uppercase tracking-wider">Conferma Azione</h3>
-            <p id="confirm-message" class="text-xs opacity-80 leading-relaxed">Sei davvero sicuro di voler procedere?</p>
+    <!-- Modale di Conferma Custom -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-xs w-full p-5 space-y-4 text-center shadow-2xl border-2 border-blood-600 bg-night-950 text-parchment-200 gothic-border">
+            <i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-3xl text-blood-500 animate-pulse"></i>
+            <h3 id="confirm-title" class="font-gothic text-base font-bold uppercase tracking-wider text-gold-400">Conferma Azione</h3>
+            <p id="confirm-message" class="text-xs opacity-85 leading-relaxed font-body">Sei davvero sicuro di voler procedere?</p>
             
             <div class="flex justify-center gap-2 pt-2">
-                <button onclick="closeConfirmModal(false)" class="px-4 py-2 bg-gray-800 text-moon-300 text-xs font-bold rounded-xl border border-gray-600">Annulla</button>
-                <button id="confirm-action-btn" class="px-4 py-2 bg-blood-600 text-white text-xs font-bold rounded-xl border border-blood-900 shadow active:scale-95">Procedi</button>
+                <button onclick="closeConfirmModal(false)" class="px-4 py-2 bg-night-800 text-parchment-300 text-xs font-medieval font-bold rounded-xl border border-gray-700">Annulla</button>
+                <button id="confirm-action-btn" class="px-4 py-2 bg-blood-600 hover:bg-blood-500 text-white text-xs font-medieval font-bold rounded-xl border border-blood-800 shadow-lg active:scale-95 transition">Procedi</button>
             </div>
         </div>
     </div>
@@ -379,42 +345,38 @@
         let appState = {
             phase: 'night',
             dayNumber: 1,
+            nightCardIndex: 0,
             roles: [
-                { id: 'lupo', name: 'lupo', gesture: 'Dito premuto sulla spalla', team: 'werewolf', minCount: 2, active: true, desc: 'Di notte sceglie assieme agli altri lupi la vittima da sbranare.' },
-                { id: 'veggente', name: 'veggente', gesture: 'Un tocco delicato sulla testa', team: 'villager', minCount: 1, active: true, desc: 'Di notte indica un giocatore e il Master gli risponde con un pollice su (umano) o giù (lupo).' },
-                { id: 'guardia', name: 'guardia (protetto)', gesture: 'Due tocchi sul petto', team: 'villager', minCount: 1, active: true, desc: 'Protegge un giocatore a sua scelta ogni notte dalle grinfie dei lupi.' },
-                { id: 'medium', name: 'medium', gesture: 'Tocco sulla fronte', team: 'villager', minCount: 1, active: true, desc: 'Dalla seconda notte scopre se il giustiziato al rogo del giorno prima era un lupo.' },
-                { id: 'massone', name: 'massoni', gesture: 'Due tocchi sulla schiena', team: 'villager', minCount: 2, active: true, desc: 'I massoni si svegliano insieme la prima notte per riconoscersi tra loro.' },
-                { id: 'mitomane', name: 'mitomane', gesture: 'Tocco sul collo', team: 'solo', minCount: 1, active: false, desc: 'La seconda notte sceglie un giocatore e ne eredita la fazione/ruolo.' },
-                { id: 'indemoniato', name: 'indemoniato', gesture: 'Sfioramento sulla guancia', team: 'werewolf', minCount: 1, active: false, desc: 'Vince con i lupi ma non si sveglia la notte con loro e il veggente lo vede umano.' },
-                { id: 'criceto', name: 'criceto mannaro', gesture: 'Un pizzicotto sul braccio', team: 'solo', minCount: 1, active: false, desc: 'Non può morire sbranato dai lupi. Se alla fine della partita è vivo, vince da solo!' },
-                { id: 'mimo', name: 'mimo', gesture: 'Tocco sull orecchio', team: 'solo', minCount: 1, active: false, desc: 'Sceglie un bersaglio ogni notte che dovrà imitare i suoi movimenti.' }
+                { id: 'lupo', name: 'lupo', team: 'werewolf', minCount: 2, active: true, desc: 'Si sveglia la notte assieme agli altri lupi per cacciare e sbranare un villico.' },
+                { id: 'donna', name: 'donna', team: 'villager', minCount: 1, active: true, desc: 'Si sveglia la notte per proteggere una persona. Attenzione: se protegge un Lupo, la Donna muore!' },
+                { id: 'veggente', name: 'veggente', team: 'villager', minCount: 1, active: true, desc: 'Si sveglia e indica un giocatore. Il Narratore gli risponde se è un Lupo o non lo è.' },
+                { id: 'fratelli', name: 'fratelli', team: 'villager', minCount: 2, active: true, desc: 'Si svegliano la prima notte per vedersi e riconoscere il proprio fratello.' },
+                { id: 'gemelli', name: 'gemelli', team: 'villager', minCount: 2, active: true, desc: 'Si svegliano per scoprirsi. Legame di sangue: quando un Gemello muore, muore istantaneamente anche l\'altro.' },
+                { id: 'mimo', name: 'mimo', team: 'solo', minCount: 1, active: true, desc: 'Una volta per partita può copiare il ruolo di un giocatore e tenerselo per il resto del gioco.' },
+                { id: 'necromante', name: 'necromante', team: 'villager', minCount: 1, active: true, desc: 'Può resuscitare un giocatore morto (che non sia un killer). Il resuscitato non potrà interagire o votare durante il giorno.' }
             ],
             players: [],
-            nightNotes: {}, // Bersagli selezionati dai menu a tendina
+            nightActions: {},
+            nightResolutionSummary: [],
+            resurrectedPlayers: [],
             dayVotes: {}
         };
 
         let confirmCallback = null;
 
+        function getPlayerRoleLabel(player) {
+            if (!player || !player.roleId) return 'Villico';
+            const r = appState.roles.find(x => x.id === player.roleId);
+            if (!r) return 'Villico';
+            return r.name.charAt(0).toUpperCase() + r.name.slice(1);
+        }
+
         window.onload = function() {
-            const saved = localStorage.getItem('lupus_master_state_v3');
+            const saved = localStorage.getItem('lupus_master_state_v8');
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
                     appState = { ...appState, ...parsed };
-                } catch(e) {}
-            }
-
-            if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-                try {
-                    const swCode = `
-                        self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
-                        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-                        self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-                    `;
-                    const blob = new Blob([swCode], { type: 'text/javascript' });
-                    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
                 } catch(e) {}
             }
 
@@ -424,7 +386,7 @@
 
         function saveToLocalStorage() {
             try {
-                localStorage.setItem('lupus_master_state_v3', JSON.stringify(appState));
+                localStorage.setItem('lupus_master_state_v8', JSON.stringify(appState));
             } catch(e) {}
         }
 
@@ -438,46 +400,146 @@
             const subtitle = document.getElementById('header-subtitle');
             
             if (appState.phase === 'night') {
-                html.style.backgroundColor = '#070912';
-                body.style.backgroundColor = '#070912';
-                body.className = "theme-night h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-magic-500 selection:text-white";
+                html.style.backgroundColor = '#05070e';
+                body.style.backgroundColor = '#05070e';
+                body.className = "theme-night h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-purple-600 selection:text-white";
                 
                 header.className = "safe-pad-top pb-3 px-4 flex items-center justify-between shrink-0 z-20 border-b border-night-800 bg-night-950/90 backdrop-blur transition-colors duration-500";
                 nav.className = "safe-pad-bottom pt-2.5 px-3 flex items-center justify-around shrink-0 z-20 border-t border-night-800 bg-night-950/95 backdrop-blur w-full transition-colors duration-500";
                 
-                title.innerHTML = `<i class="fa-solid fa-moon text-moon-400"></i> Il Grimorio`;
+                title.className = "font-gothic text-lg sm:text-xl font-black tracking-widest leading-none drop-shadow-md flex items-center gap-2 text-gold-400";
+                title.innerHTML = `<i class="fa-solid fa-moon text-gold-500"></i> Il Grimorio`;
+                subtitle.className = "font-medieval text-[10px] uppercase tracking-widest opacity-80 mt-1 text-gold-600";
                 subtitle.innerText = `Notte ${appState.dayNumber} - L'Oscurità`;
                 
-                phaseBtn.className = "px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-lg transition transform active:scale-95 flex items-center gap-2 bg-parchment-200 text-wood-900 border-2 border-wood-600";
+                phaseBtn.className = "px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-xl transition transform active:scale-95 flex items-center gap-2 bg-parchment-200 text-wood-900 border-2 border-gold-600 gothic-border";
                 phaseBtn.innerHTML = `<i class="fa-solid fa-sun text-amber-600"></i> Alba`;
             } else {
-                html.style.backgroundColor = '#cbb490';
-                body.style.backgroundColor = '#cbb490';
-                body.className = "theme-day h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-500 selection:text-white";
+                html.style.backgroundColor = '#523a1a';
+                body.style.backgroundColor = '#523a1a';
+                body.className = "theme-day h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-600 selection:text-white";
                 
-                header.className = "safe-pad-top pb-3 px-4 flex items-center justify-between shrink-0 z-20 border-b border-wood-800/30 bg-parchment-100/90 backdrop-blur transition-colors duration-500";
-                nav.className = "safe-pad-bottom pt-2.5 px-3 flex items-center justify-around shrink-0 z-20 border-t border-wood-800/30 bg-parchment-100/95 backdrop-blur w-full transition-colors duration-500";
+                header.className = "safe-pad-top pb-3 px-4 flex items-center justify-between shrink-0 z-20 border-b border-parchment-400/40 bg-parchment-200/95 backdrop-blur transition-colors duration-500";
+                nav.className = "safe-pad-bottom pt-2.5 px-3 flex items-center justify-around shrink-0 z-20 border-t border-parchment-400/40 bg-parchment-200/95 backdrop-blur w-full transition-colors duration-500";
                 
-                title.innerHTML = `<i class="fa-solid fa-sun text-blood-600"></i> La Piazza`;
+                title.className = "font-gothic text-lg sm:text-xl font-black tracking-widest leading-none drop-shadow-md flex items-center gap-2 text-blood-800";
+                title.innerHTML = `<i class="fa-solid fa-sun text-blood-700"></i> La Piazza`;
+                subtitle.className = "font-medieval text-[10px] uppercase tracking-widest font-bold mt-1 text-wood-900 opacity-90";
                 subtitle.innerText = `Giorno ${appState.dayNumber} - Il Processo`;
                 
-                phaseBtn.className = "px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-lg transition transform active:scale-95 flex items-center gap-2 bg-night-900 text-moon-300 border-2 border-magic-900";
+                phaseBtn.className = "px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-xl transition transform active:scale-95 flex items-center gap-2 bg-night-950 text-gold-300 border-2 border-gold-600 gothic-border";
                 phaseBtn.innerHTML = `<i class="fa-solid fa-moon text-indigo-400"></i> Tramonto`;
             }
         }
 
         function togglePhase() {
             if (appState.phase === 'night') {
+                processNightResolution();
                 appState.phase = 'day';
                 showToast("Il sole sorge sul villaggio...", "day");
             } else {
                 appState.phase = 'night';
                 appState.dayNumber += 1;
+                appState.nightCardIndex = 0;
+                appState.nightActions = {};
                 appState.dayVotes = {};
                 showToast(`La Notte ${appState.dayNumber} avvolge tutto...`, "night");
             }
             applyThemeClasses();
             renderAll();
+        }
+
+        function processNightResolution() {
+            const summary = [];
+            const wolves = appState.players.filter(p => p.roleId === 'lupo' && !p.isDead);
+            const wolfTargetName = appState.nightActions['lupo'] || '';
+            const donnaTargetName = appState.nightActions['donna'] || '';
+            const necromanteTargetName = appState.nightActions['necromante'] || '';
+            const veggenteTargetName = appState.nightActions['veggente'] || '';
+            const mimoTargetName = appState.nightActions['mimo'] || '';
+
+            // Wording helpers per singolare/plurale dei lupi
+            const wolfList = wolves.length > 0 
+                ? wolves.map(w => `<b>${w.name} (Lupo)</b>`).join(' e ') 
+                : 'I Lupi';
+            const verbAttempt = wolves.length > 1 ? 'hanno provato' : 'ha provato';
+            const verbKill = wolves.length > 1 ? 'hanno ucciso' : 'ha ucciso';
+
+            // 1. Azione Lupo & Protezione Donna
+            if (wolfTargetName) {
+                const wolfTarget = appState.players.find(p => p.name === wolfTargetName);
+                const roleDisplay = getPlayerRoleLabel(wolfTarget);
+
+                if (wolfTargetName === donnaTargetName) {
+                    const donnaPlayer = appState.players.find(p => p.roleId === 'donna' && !p.isDead);
+                    const donnaLabel = donnaPlayer ? `<b>${donnaPlayer.name} (Donna)</b>` : 'la Donna';
+                    summary.push(`🐺 ${wolfList} ${verbAttempt} a sbranare <b>${wolfTargetName} (${roleDisplay})</b>, ma l'attacco è stato sventato da ${donnaLabel}!`);
+                } else {
+                    if (wolfTarget) {
+                        wolfTarget.isDead = true;
+
+                        // Se era un Gemello, muore anche l'altro!
+                        if (wolfTarget.roleId === 'gemelli') {
+                            const otherGemello = appState.players.find(p => p.id !== wolfTarget.id && p.roleId === 'gemelli' && !p.isDead);
+                            if (otherGemello) {
+                                otherGemello.isDead = true;
+                                summary.push(`🩸 ${wolfList} ${verbKill} <b>${wolfTarget.name} (${roleDisplay})</b>. Per il legame fatale dei Gemelli, muore anche <b>${otherGemello.name} (Gemelli)</b>!`);
+                            } else {
+                                summary.push(`🩸 ${wolfList} ${verbKill} <b>${wolfTarget.name} (${roleDisplay})</b>.`);
+                            }
+                        } else {
+                            summary.push(`🩸 ${wolfList} ${verbKill} <b>${wolfTarget.name} (${roleDisplay})</b>.`);
+                        }
+                    }
+                }
+            } else {
+                summary.push(`🌙 Nessun abitante è stato sbranato dai Lupi stanotte.`);
+            }
+
+            // 2. Controllo Donna -> Protegge Lupo
+            if (donnaTargetName) {
+                const protectedPlayer = appState.players.find(p => p.name === donnaTargetName);
+                const protRoleDisplay = getPlayerRoleLabel(protectedPlayer);
+                if (protectedPlayer && protectedPlayer.roleId === 'lupo') {
+                    const donnaPlayer = appState.players.find(p => p.roleId === 'donna' && !p.isDead);
+                    if (donnaPlayer) {
+                        donnaPlayer.isDead = true;
+                        summary.push(`💀 La Donna (<b>${donnaPlayer.name}</b>) ha protetto un Lupo (<b>${protectedPlayer.name} (${protRoleDisplay})</b>) ed è morta per il morbo!`);
+                    }
+                }
+            }
+
+            // 3. Veggente
+            if (veggenteTargetName) {
+                const target = appState.players.find(p => p.name === veggenteTargetName);
+                const targetRoleDisplay = getPlayerRoleLabel(target);
+                const isWolf = target?.roleId === 'lupo';
+                summary.push(`🔮 Il Veggente ha indagato su <b>${veggenteTargetName} (${targetRoleDisplay})</b>: ${isWolf ? '<b class="text-red-700">È UN LUPO!</b>' : '<b class="text-emerald-800">NON è un Lupo.</b>'}`);
+            }
+
+            // 4. Mimo
+            if (mimoTargetName) {
+                const target = appState.players.find(p => p.name === mimoTargetName);
+                const targetRoleDisplay = getPlayerRoleLabel(target);
+                summary.push(`🎭 Il Mimo ha copiato il ruolo di <b>${mimoTargetName} (${targetRoleDisplay})</b>.`);
+            }
+
+            // 5. Necromante
+            if (necromanteTargetName) {
+                const deadPlayer = appState.players.find(p => p.name === necromanteTargetName);
+                const deadRoleDisplay = getPlayerRoleLabel(deadPlayer);
+                if (deadPlayer) {
+                    deadPlayer.isDead = false;
+                    if (!appState.resurrectedPlayers) appState.resurrectedPlayers = [];
+                    if (!appState.resurrectedPlayers.includes(deadPlayer.name)) {
+                        appState.resurrectedPlayers.push(`${deadPlayer.name} (${deadRoleDisplay})`);
+                    }
+                    summary.push(`✨ Il Necromante ha resuscitato <b>${deadPlayer.name} (${deadRoleDisplay})</b> (rimarrà in silenzio durante il giorno).`);
+                }
+            }
+
+            appState.nightResolutionSummary = summary;
+            saveToLocalStorage();
         }
 
         function switchTab(tabKey) {
@@ -489,7 +551,7 @@
                     sec.classList.remove('hidden');
                     btn.classList.remove('opacity-60');
                     btn.classList.add('scale-105');
-                    btn.style.color = appState.phase === 'night' ? '#f3f4f6' : '#990000';
+                    btn.style.color = appState.phase === 'night' ? '#facc15' : '#800000';
                 } else {
                     sec.classList.add('hidden');
                     btn.classList.add('opacity-60');
@@ -511,128 +573,243 @@
             container.innerHTML = '';
 
             const alivePlayers = appState.players.filter(p => !p.isDead);
+            const deadPlayers = appState.players.filter(p => p.isDead);
 
             if (appState.phase === 'night') {
-                // ================= FASE NOTTURNA =================
+                // ================= FASE NOTTURNA (CARD IN SEQUENZA) =================
                 const activeRolesInGame = appState.roles.filter(role => {
-                    return appState.players.some(p => p.roleId === role.id && !p.isDead);
+                    if (!role.active) return false;
+                    const isAliveInGame = appState.players.some(p => p.roleId === role.id && !p.isDead);
+                    if (!isAliveInGame) return false;
+                    if (role.id === 'necromante') {
+                        return deadPlayers.length > 0;
+                    }
+                    return true;
                 });
 
-                let html = `
-                    <div class="text-center mb-3">
-                        <i class="fa-solid fa-eye-slash text-2xl text-moon-400 opacity-60"></i>
-                        <p class="font-medieval text-xs uppercase tracking-widest opacity-80 mt-1">Evocazioni Notturne</p>
-                    </div>
-                `;
-
                 if (activeRolesInGame.length === 0) {
-                    html += `<div class="glass-panel rounded-2xl p-5 text-center text-xs opacity-70 italic">Nessuna entità speciale dorme in questo villaggio stanotte.</div>`;
-                } else {
-                    html += `<div class="space-y-3">`;
-                    activeRolesInGame.forEach((role, idx) => {
-                        const assignedPlayers = appState.players.filter(p => p.roleId === role.id && !p.isDead).map(p => p.name).join(', ');
-                        const selectedTarget = appState.nightNotes[role.id] || '';
-                        const isWolf = role.team === 'werewolf';
+                    container.innerHTML = `
+                        <div class="glass-panel rounded-2xl p-6 text-center space-y-3 gothic-border">
+                            <i class="fa-solid fa-moon text-3xl text-gold-400 opacity-60"></i>
+                            <h3 class="font-gothic text-sm font-bold uppercase tracking-wider text-gold-300">Nessuna Chiamata Notturna</h3>
+                            <p class="text-xs opacity-75 italic font-body">Nessuna entità speciale è attiva o in vita in questo villaggio stanotte.</p>
+                            <button onclick="togglePhase()" class="mt-2 px-4 py-2.5 bg-gold-600 hover:bg-gold-500 text-night-950 font-medieval font-bold text-xs uppercase tracking-wider rounded-xl border border-gold-300 shadow active:scale-95 transition">
+                                Passa all'Alba <i class="fa-solid fa-sun ml-1"></i>
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
 
-                        let playerOptions = `<option value="">-- Seleziona Bersaglio --</option>`;
-                        alivePlayers.forEach(p => {
-                            playerOptions += `<option value="${p.name}" ${selectedTarget === p.name ? 'selected' : ''}>${p.name}</option>`;
-                        });
+                if (appState.nightCardIndex >= activeRolesInGame.length) {
+                    appState.nightCardIndex = activeRolesInGame.length - 1;
+                }
+                if (appState.nightCardIndex < 0) appState.nightCardIndex = 0;
 
-                        html += `
-                            <div class="glass-panel rounded-2xl p-3.5 relative border-l-4 ${isWolf ? 'border-blood-600' : 'border-magic-500'}">
-                                <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-2">
-                                    <div>
-                                        <span class="font-medieval text-xs font-bold block ${isWolf ? 'text-red-400' : 'text-magic-400'}">${idx + 1}. ${role.name.toUpperCase()}</span>
-                                        <span class="text-[10px] opacity-75 font-semibold text-moon-300">${assignedPlayers || 'Nessuno'}</span>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="text-[8px] uppercase tracking-wider block opacity-60">Tocco Tattile</span>
-                                        <span class="font-bold text-[10px]"><i class="fa-solid fa-hand-sparkles mr-1"></i>${role.gesture || '-'}</span>
-                                    </div>
+                const currentRole = activeRolesInGame[appState.nightCardIndex];
+                const assignedPlayers = appState.players.filter(p => p.roleId === currentRole.id && !p.isDead);
+                const isWolf = currentRole.team === 'werewolf';
+                const selectedTarget = appState.nightActions[currentRole.id] || '';
+
+                // Ruoli che non richiedono selezione di bersaglio
+                const requiresTarget = ['lupo', 'donna', 'veggente', 'mimo', 'necromante'].includes(currentRole.id);
+
+                // Controllo Avviso Donna - Lupo
+                let warningBanner = '';
+                if (currentRole.id === 'donna' && selectedTarget) {
+                    const targetPlayer = appState.players.find(p => p.name === selectedTarget);
+                    if (targetPlayer && targetPlayer.roleId === 'lupo') {
+                        warningBanner = `
+                            <div class="bg-blood-950/90 border border-blood-500 rounded-xl p-3 text-red-200 text-xs font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-skull-crossbones text-blood-500 text-base shrink-0 animate-bounce"></i>
+                                <span>ATTENZIONE! La Donna ha protetto ${targetPlayer.name} (Lupo)! Morirà all'alba.</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Banner immediato per il Veggente
+                let veggenteBanner = '';
+                if (currentRole.id === 'veggente' && selectedTarget) {
+                    const targetPlayer = appState.players.find(p => p.name === selectedTarget);
+                    if (targetPlayer) {
+                        const isTargetWolf = targetPlayer.roleId === 'lupo';
+                        const targetRoleLabel = getPlayerRoleLabel(targetPlayer);
+                        veggenteBanner = `
+                            <div class="p-3.5 rounded-xl border-2 ${isTargetWolf ? 'bg-blood-950/90 border-blood-500 text-red-200' : 'bg-emerald-950/90 border-emerald-500 text-emerald-200'} space-y-1 shadow-lg animate-pulse">
+                                <div class="flex items-center gap-2 font-medieval text-xs font-bold uppercase tracking-wider">
+                                    <i class="fa-solid fa-eye text-base"></i>
+                                    <span>Esito per il Master (Veggente)</span>
                                 </div>
-                                <div class="mt-2.5">
-                                    <label class="text-[9px] uppercase font-bold text-amber-300 block mb-1">
-                                        ${isWolf ? 'Vittima Sbranata:' : 'Bersaglio dell\'azione:'}
+                                <p class="text-xs font-body leading-relaxed">
+                                    <b>${targetPlayer.name} (${targetRoleLabel})</b>: ${isTargetWolf ? '<span class="text-blood-400 font-black uppercase text-sm">È UN LUPO! 🐺</span>' : '<span class="text-emerald-300 font-black uppercase text-sm">NON È UN LUPO 👤</span>'}
+                                </p>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Opzioni per i Dropdown
+                let playerOptions = `<option value="">-- Nessun Bersaglio --</option>`;
+                if (currentRole.id === 'necromante') {
+                    deadPlayers.forEach(p => {
+                        const rLabel = getPlayerRoleLabel(p);
+                        playerOptions += `<option value="${p.name}" ${selectedTarget === p.name ? 'selected' : ''}>${p.name} (${rLabel}) - Morto</option>`;
+                    });
+                } else if (currentRole.id === 'lupo') {
+                    // I Lupi NON possono auto-scegliersi!
+                    const nonWolfPlayers = alivePlayers.filter(p => p.roleId !== 'lupo');
+                    nonWolfPlayers.forEach(p => {
+                        const rLabel = getPlayerRoleLabel(p);
+                        playerOptions += `<option value="${p.name}" ${selectedTarget === p.name ? 'selected' : ''}>${p.name} (${rLabel})</option>`;
+                    });
+                } else {
+                    alivePlayers.forEach(p => {
+                        const rLabel = getPlayerRoleLabel(p);
+                        playerOptions += `<option value="${p.name}" ${selectedTarget === p.name ? 'selected' : ''}>${p.name} (${rLabel})</option>`;
+                    });
+                }
+
+                const isLastCard = appState.nightCardIndex === activeRolesInGame.length - 1;
+
+                let cardHtml = `
+                    <div class="space-y-4">
+                        
+                        <!-- Progresso Sequenza -->
+                        <div class="flex items-center justify-between text-xs font-medieval font-bold uppercase tracking-widest text-gold-300 px-1">
+                            <span><i class="fa-solid fa-scroll text-gold-400 mr-1.5"></i> Chiamata ${appState.nightCardIndex + 1} di ${activeRolesInGame.length}</span>
+                            <span class="text-gold-400 font-bold">${currentRole.name.toUpperCase()}</span>
+                        </div>
+
+                        <!-- Card del Ruolo in Sequenza -->
+                        <div class="glass-panel rounded-3xl p-5 space-y-4 border-2 ${isWolf ? 'border-blood-600 bg-blood-950/20' : 'border-gold-500/60 bg-night-900'} relative shadow-2xl gothic-border">
+                            
+                            <div class="flex justify-between items-start border-b border-white/10 pb-3">
+                                <div>
+                                    <span class="text-[9px] font-medieval font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border ${isWolf ? 'bg-blood-900/60 text-red-300 border-blood-500' : 'bg-purple-900/60 text-purple-300 border-purple-500'}">
+                                        ${currentRole.team.toUpperCase()}
+                                    </span>
+                                    <h2 class="font-gothic text-xl font-bold uppercase tracking-wider text-gold-300 mt-1">${currentRole.name}</h2>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[9px] uppercase tracking-wider block opacity-60 font-semibold font-medieval">In Vita</span>
+                                    <span class="text-xs font-bold text-parchment-100 font-body">${assignedPlayers.map(p => `${p.name} (${getPlayerRoleLabel(p)})`).join(', ') || 'Nessuno'}</span>
+                                </div>
+                            </div>
+
+                            <!-- Spiegazione Istruzioni -->
+                            <div class="p-3 bg-black/40 rounded-xl border border-white/5 space-y-1">
+                                <span class="text-[9px] uppercase tracking-wider text-gold-400 block font-medieval font-bold"><i class="fa-solid fa-circle-info mr-1"></i> Istruzioni Master</span>
+                                <p class="text-xs opacity-90 leading-relaxed italic text-parchment-200 font-body">${currentRole.desc}</p>
+                            </div>
+
+                            ${warningBanner}
+                            ${veggenteBanner}
+
+                            <!-- Selezione Azione Notturna (Solo per i ruoli attivi con bersaglio) -->
+                            ${requiresTarget ? `
+                                <div class="space-y-1.5 pt-1">
+                                    <label class="text-[10px] uppercase font-medieval font-bold text-gold-300 block">
+                                        ${currentRole.id === 'lupo' ? 'Scegli la Vittima da Sbranare:' : 
+                                          currentRole.id === 'donna' ? 'Scegli la Persona da Proteggere:' : 
+                                          currentRole.id === 'veggente' ? 'Scegli il Giocatore da Scontrare:' : 
+                                          currentRole.id === 'mimo' ? 'Scegli il Giocatore da Copiare:' :
+                                          currentRole.id === 'necromante' ? 'Scegli il Morto da Resuscitare:' : 'Bersaglio dell\'Azione:'}
                                     </label>
                                     <select 
-                                        onchange="saveNightNote('${role.id}', this.value)" 
-                                        class="w-full input-medieval rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-magic-500 cursor-pointer">
+                                        onchange="saveNightAction('${currentRole.id}', this.value)" 
+                                        class="w-full input-medieval rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none border-2 border-gold-500/50 bg-black/80 text-white cursor-pointer">
                                         ${playerOptions}
                                     </select>
                                 </div>
-                            </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
+                            ` : `
+                                <div class="p-3 bg-black/30 rounded-xl border border-gold-500/20 text-center">
+                                    <p class="text-xs italic text-gold-300 font-body"><i class="fa-solid fa-eye mr-1.5 text-gold-400"></i> Ruolo conoscitivo: I ${currentRole.name.toUpperCase()} si svegliano solo per riconoscersi.</p>
+                                </div>
+                            `}
 
-                // REGISTRI DELLA NOTTE (Menu a Tendina)
-                let mortiOptions = `<option value="">-- Nessuno --</option>`;
-                let mimatiOptions = `<option value="">-- Nessuno --</option>`;
-                let protettiOptions = `<option value="">-- Nessuno --</option>`;
-
-                alivePlayers.forEach(p => {
-                    mortiOptions += `<option value="${p.id}">${p.name}</option>`;
-                    mimatiOptions += `<option value="${p.id}">${p.name}</option>`;
-                    protettiOptions += `<option value="${p.id}">${p.name}</option>`;
-                });
-
-                html += `
-                    <div class="glass-panel rounded-2xl p-4 mt-4 space-y-3 border-2 border-indigo-900/50">
-                        <h3 class="font-medieval text-xs font-bold flex items-center gap-2 border-b border-white/10 pb-2 text-moon-200">
-                            <i class="fa-solid fa-feather-pointed text-magic-400"></i> Registri della Notte
-                        </h3>
-                        <p class="text-[10px] opacity-70 leading-tight">Scegli i giocatori dai menu a tendina prima di passare all'Alba.</p>
-                        
-                        <div>
-                            <label class="text-[10px] font-bold text-red-400 uppercase tracking-wider block mb-1">Segna Vittima / Morto</label>
-                            <select onchange="markPlayerDeadFromSelect(this.value)" class="w-full input-medieval rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none">
-                                ${mortiOptions}
-                            </select>
                         </div>
+
+                        <!-- Navigazione Card Notturna -->
+                        <div class="flex items-center justify-between gap-3 pt-1">
+                            <button 
+                                onclick="changeNightCard(-1)" 
+                                ${appState.nightCardIndex === 0 ? 'disabled class="opacity-40 cursor-not-allowed px-4 py-2.5 bg-gray-900 text-gray-500 font-medieval font-bold text-xs uppercase tracking-wider rounded-xl border border-gray-800"' : 'class="px-4 py-2.5 bg-wood-800 hover:bg-wood-700 text-parchment-100 font-medieval font-bold text-xs uppercase tracking-wider rounded-xl border border-wood-600 shadow active:scale-95 transition flex items-center gap-2"'}>
+                                <i class="fa-solid fa-arrow-left"></i> Precedente
+                            </button>
+
+                            ${isLastCard ? `
+                                <button onclick="togglePhase()" class="px-4 py-2.5 bg-gradient-to-r from-amber-600 via-gold-500 to-amber-600 hover:from-amber-500 hover:to-gold-400 text-wood-900 font-medieval font-bold text-xs uppercase tracking-wider rounded-xl border-2 border-gold-300 shadow-2xl active:scale-95 transition flex items-center gap-2 animate-pulse">
+                                    Passa all'Alba <i class="fa-solid fa-sun text-amber-900"></i>
+                                </button>
+                            ` : `
+                                <button onclick="changeNightCard(1)" class="px-4 py-2.5 bg-gold-600 hover:bg-gold-500 text-night-950 font-medieval font-bold text-xs uppercase tracking-wider rounded-xl border border-gold-300 shadow active:scale-95 transition flex items-center gap-2">
+                                    Prossimo <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            `}
+                        </div>
+
                     </div>
                 `;
 
-                container.innerHTML = html;
+                container.innerHTML = cardHtml;
 
             } else {
-                // ================= FASE DIURNA =================
-                let noteHtml = '';
-                const notesKeys = Object.keys(appState.nightNotes).filter(k => appState.nightNotes[k] && appState.nightNotes[k].trim() !== '');
-                if (notesKeys.length > 0) {
-                    noteHtml = `
-                        <div class="glass-panel rounded-2xl p-3.5 mb-3 space-y-1.5 bg-blood-900/20 border-blood-600/40">
-                            <h3 class="font-medieval text-[10px] font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5"><i class="fa-solid fa-scroll"></i> Sussurri Notturni</h3>
-                            ${notesKeys.map(k => {
-                                const role = appState.roles.find(r => r.id === k);
-                                return `<div class="flex justify-between text-xs"><span class="font-bold capitalize">${role ? role.name : k}:</span> <span class="italic text-amber-400 font-semibold">${appState.nightNotes[k]}</span></div>`;
-                            }).join('')}
-                            <button onclick="clearNightNotes()" class="mt-2 w-full text-center text-[9px] uppercase tracking-widest border-t border-black/10 dark:border-white/10 pt-1.5 opacity-70 hover:opacity-100">Cancella Note Notte</button>
+                // ================= FASE DIURNA (ALTO CONTRASTO SU PERGAMENA) =================
+                let actionsSummaryHtml = '';
+                if (appState.nightResolutionSummary && appState.nightResolutionSummary.length > 0) {
+                    actionsSummaryHtml = `
+                        <div class="glass-panel rounded-2xl p-4 mb-3 space-y-2 bg-parchment-100 border-2 border-blood-800 gothic-border text-wood-900 shadow-xl">
+                            <h3 class="font-gothic text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-blood-800 border-b border-blood-800/20 pb-1.5">
+                                <i class="fa-solid fa-scroll text-blood-700"></i> Eventi della Notte Trascorsa
+                            </h3>
+                            <div class="space-y-1.5 pt-1">
+                                ${appState.nightResolutionSummary.map(eventText => `
+                                    <p class="text-xs font-body text-wood-900 leading-relaxed border-b border-wood-600/10 pb-1.5">${eventText}</p>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let resurrectedBanner = '';
+                if (appState.resurrectedPlayers && appState.resurrectedPlayers.length > 0) {
+                    resurrectedBanner = `
+                        <div class="glass-panel rounded-2xl p-3 mb-3 bg-emerald-900/10 border-2 border-emerald-800 text-wood-900 space-y-1">
+                            <span class="font-medieval text-[10px] font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1">
+                                <i class="fa-solid fa-wand-magic-sparkles text-emerald-700"></i> Resuscitati dal Necromante
+                            </span>
+                            <p class="text-xs text-emerald-950 font-black font-body">${appState.resurrectedPlayers.join(', ')}</p>
+                            <p class="text-[9px] text-wood-800 italic font-body">Non possono parlare, interagire o votare durante il giorno.</p>
                         </div>
                     `;
                 }
 
                 let rogoHtml = `
-                    <div class="glass-panel rounded-2xl p-4 border-2 border-blood-600/60 bg-red-950/20 space-y-3">
-                        <h3 class="font-medieval text-xs font-bold text-red-400 flex items-center gap-1.5 border-b border-blood-600/30 pb-2">
-                            <i class="fa-solid fa-fire text-red-500 animate-pulse"></i> Il Rogo (Votazione Diurna)
+                    <div class="glass-panel rounded-2xl p-4 border-2 border-blood-800 bg-parchment-100 text-wood-900 space-y-3 gothic-border shadow-xl">
+                        <h3 class="font-gothic text-xs font-bold text-blood-800 flex items-center gap-2 border-b border-blood-800/20 pb-2">
+                            <i class="fa-solid fa-fire text-blood-700 animate-pulse"></i> Il Rogo (Votazione Diurna)
                         </h3>
                         
                         <div class="space-y-2">
-                            ${alivePlayers.length === 0 ? '<p class="text-[10px] opacity-70 text-center py-2">Nessun superstite nel villaggio.</p>' : 
+                            ${alivePlayers.length === 0 ? '<p class="text-xs opacity-80 text-center py-2 font-body text-wood-900">Nessun superstite nel villaggio.</p>' : 
                               alivePlayers.map(p => {
                                   const votes = appState.dayVotes[p.id] || 0;
+                                  const rLabel = getPlayerRoleLabel(p);
+                                  const isResurrected = appState.resurrectedPlayers && appState.resurrectedPlayers.some(rp => rp.includes(p.name));
                                   return `
-                                  <div class="flex items-center justify-between bg-black/10 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-2">
-                                      <span class="font-bold text-xs truncate max-w-[110px]">${p.name}</span>
+                                  <div class="flex items-center justify-between bg-parchment-200/80 border border-wood-700/40 rounded-xl p-2.5 shadow-sm">
+                                      <div class="flex flex-col">
+                                          <span class="font-bold text-xs truncate max-w-[150px] text-wood-900 font-body">${p.name} <span class="opacity-75 font-normal">(${rLabel})</span></span>
+                                          ${isResurrected ? '<span class="text-[8px] text-emerald-800 font-black uppercase font-medieval">Resuscitato (Silenzio)</span>' : ''}
+                                      </div>
                                       <div class="flex items-center gap-2">
-                                          <div class="flex items-center bg-black/20 dark:bg-white/10 rounded-lg overflow-hidden text-xs">
-                                              <button onclick="changeVote('${p.id}', -1)" class="px-2 py-1 font-bold active:bg-black/40">-</button>
-                                              <span class="px-2 font-bold text-red-400">${votes}</span>
-                                              <button onclick="changeVote('${p.id}', 1)" class="px-2 py-1 font-bold active:bg-black/40">+</button>
+                                          <div class="flex items-center bg-parchment-100 rounded-lg border border-wood-800/40 overflow-hidden text-xs">
+                                              <button onclick="changeVote('${p.id}', -1)" class="px-2 py-1 font-bold active:bg-parchment-300 text-wood-900">-</button>
+                                              <span class="px-2 font-black text-blood-800">${votes}</span>
+                                              <button onclick="changeVote('${p.id}', 1)" class="px-2 py-1 font-bold active:bg-parchment-300 text-wood-900">+</button>
                                           </div>
-                                          <button onclick="confirmExecutePlayer('${p.id}')" class="px-2.5 py-1 bg-blood-600 hover:bg-blood-700 text-white text-[9px] uppercase font-bold rounded-lg shadow active:scale-95 transition">Condanna</button>
+                                          <button onclick="confirmExecutePlayer('${p.id}')" class="px-2.5 py-1 bg-blood-800 hover:bg-blood-700 text-parchment-100 text-[9px] font-medieval uppercase font-bold rounded-lg shadow active:scale-95 transition border border-blood-900">Condanna</button>
                                       </div>
                                   </div>
                                   `;
@@ -642,30 +819,27 @@
                     </div>
                 `;
 
-                container.innerHTML = noteHtml + rogoHtml;
+                container.innerHTML = actionsSummaryHtml + resurrectedBanner + rogoHtml;
             }
         }
 
-        function saveNightNote(roleId, value) {
-            appState.nightNotes[roleId] = value;
+        function changeNightCard(delta) {
+            appState.nightCardIndex += delta;
+            renderDynamicPhase();
             saveToLocalStorage();
         }
 
-        function markPlayerDeadFromSelect(playerId) {
-            if (!playerId) return;
-            const player = appState.players.find(p => p.id === playerId);
-            if (player) {
-                player.isDead = true;
-                saveToLocalStorage();
-                renderAll();
-                showToast(`${player.name} è stato trovato morto!`, "blood");
+        function saveNightAction(roleId, value) {
+            appState.nightActions[roleId] = value;
+            
+            if (roleId === 'donna' && value) {
+                const targetPlayer = appState.players.find(p => p.name === value);
+                if (targetPlayer && targetPlayer.roleId === 'lupo') {
+                    showToast("La Donna ha scelto un Lupo! Morirà all'alba.", "blood");
+                }
             }
-        }
-
-        function clearNightNotes() {
-            appState.nightNotes = {};
-            renderAll();
-            showToast("Note notturne archiviate.", "day");
+            saveToLocalStorage();
+            renderDynamicPhase();
         }
 
         function changeVote(playerId, delta) {
@@ -682,13 +856,13 @@
             container.innerHTML = '';
 
             if (appState.players.length === 0) {
-                container.innerHTML = `<p class="text-[11px] opacity-70 text-center py-3 italic">La taverna è vuota. Aggiungi viandanti per iniziare.</p>`;
+                container.innerHTML = `<p class="text-[11px] opacity-80 text-center py-3 italic font-body text-wood-900 dark:text-parchment-200">La taverna è vuota. Aggiungi viandanti per iniziare.</p>`;
                 return;
             }
 
             appState.players.forEach(player => {
                 const item = document.createElement('div');
-                item.className = "flex items-center justify-between bg-black/10 dark:bg-white/5 p-2 rounded-xl border border-black/10 dark:border-white/10 gap-2";
+                item.className = "flex items-center justify-between bg-black/20 dark:bg-black/30 p-2 rounded-xl border border-black/10 dark:border-white/10 gap-2";
                 
                 let optionsHtml = `<option value="">-- Popolano --</option>`;
                 appState.roles.forEach(r => {
@@ -697,8 +871,8 @@
 
                 item.innerHTML = `
                     <div class="flex items-center gap-2 flex-1 min-w-0">
-                        <button onclick="deletePlayer('${player.id}')" class="p-1 opacity-50 hover:opacity-100 hover:text-red-400 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
-                        <span class="text-xs font-bold truncate ${player.isDead ? 'line-through opacity-40' : ''}">${player.name}</span>
+                        <button onclick="deletePlayer('${player.id}')" class="p-1 opacity-60 hover:opacity-100 hover:text-blood-600 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
+                        <span class="text-xs font-bold font-body truncate ${player.isDead ? 'line-through opacity-40' : 'text-wood-900 dark:text-parchment-100'}">${player.name}</span>
                     </div>
                     
                     <div class="flex items-center gap-1.5 shrink-0">
@@ -755,10 +929,20 @@
         function confirmExecutePlayer(playerId) {
             const player = appState.players.find(p => p.id === playerId);
             if (!player) return;
-            openConfirmModal("Condanna al Rogo", `Sei sicuro di voler ardere al rogo ${player.name}? Morirà.`, () => {
+            const roleLabel = getPlayerRoleLabel(player);
+            openConfirmModal("Condanna al Rogo", `Sei sicuro di voler ardere al rogo ${player.name} (${roleLabel})? Morirà.`, () => {
                 player.isDead = true;
+
+                if (player.roleId === 'gemelli') {
+                    const otherGemello = appState.players.find(p => p.id !== player.id && p.roleId === 'gemelli' && !p.isDead);
+                    if (otherGemello) {
+                        otherGemello.isDead = true;
+                        showToast(`Legame fatale: arso sul rogo anche ${otherGemello.name} (Gemelli)!`, "blood");
+                    }
+                }
+
                 renderAll();
-                showToast(`${player.name} è arso sul rogo!`, "blood");
+                showToast(`${player.name} (${roleLabel}) è arso sul rogo!`, "blood");
             });
         }
 
@@ -807,31 +991,26 @@
                 const isWolf = role.team === 'werewolf';
                 const isSolo = role.team === 'solo';
                 
-                let badgeBg = 'bg-green-900/60 text-green-300 border-green-500/30';
+                let badgeBg = 'bg-emerald-900/60 text-emerald-300 border-emerald-500/30';
                 if (isWolf) badgeBg = 'bg-blood-900/60 text-red-300 border-blood-500/30';
                 if (isSolo) badgeBg = 'bg-purple-900/60 text-purple-300 border-purple-500/30';
 
-                card.className = `glass-panel p-3.5 rounded-xl space-y-2 border-l-4 ${role.active ? 'opacity-100' : 'opacity-40'} ${isWolf ? 'border-blood-600' : 'border-magic-500'}`;
+                card.className = `glass-panel p-3.5 rounded-xl space-y-2 border-l-4 ${role.active ? 'opacity-100' : 'opacity-40'} ${isWolf ? 'border-blood-600' : 'border-gold-500'}`;
                 
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <input type="checkbox" ${role.active ? 'checked' : ''} onchange="toggleRoleActive('${role.id}', this.checked)" class="w-4 h-4 accent-magic-500 rounded cursor-pointer">
-                            <span class="font-medieval text-xs font-bold capitalize text-amber-300">${role.name}</span>
-                            <span class="text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeBg}">${role.team}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openRoleModal('${role.id}')" class="opacity-70 hover:opacity-100 p-1 text-moon-300"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="confirmDeleteRole('${role.id}')" class="opacity-70 hover:opacity-100 hover:text-red-400 p-1 text-moon-300"><i class="fa-solid fa-trash text-xs"></i></button>
+                            <input type="checkbox" ${role.active ? 'checked' : ''} onchange="toggleRoleActive('${role.id}', this.checked)" class="w-4 h-4 accent-gold-500 rounded cursor-pointer">
+                            <span class="font-gothic text-xs font-bold capitalize text-wood-900 dark:text-gold-300">${role.name}</span>
+                            <span class="text-[8px] font-medieval font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeBg}">${role.team}</span>
                         </div>
                     </div>
 
-                    <div class="text-[10px] space-y-1">
-                        <div class="flex justify-between opacity-85 italic text-moon-200">
-                            <span><i class="fa-solid fa-hand-sparkles mr-1"></i> ${role.gesture || 'Nessuno'}</span>
-                            <span class="font-bold text-amber-300">Qtà in Partita: ${role.minCount || 1}</span>
+                    <div class="text-[10px] space-y-1 font-body">
+                        <div class="flex justify-between font-medieval font-bold text-wood-900 dark:text-gold-400">
+                            <span>Quantità in Partita: ${role.minCount || 1}</span>
                         </div>
-                        <p class="opacity-80 leading-relaxed font-normal text-moon-300">${role.desc || 'Nessuna descrizione.'}</p>
+                        <p class="leading-relaxed font-normal text-wood-900 dark:text-parchment-200">${role.desc || 'Nessuna descrizione.'}</p>
                     </div>
                 `;
                 container.appendChild(card);
@@ -845,65 +1024,6 @@
                 saveToLocalStorage();
                 renderRolesList();
             }
-        }
-
-        function openRoleModal(roleId = null) {
-            document.getElementById('role-form').reset();
-            document.getElementById('modal-role-id').value = '';
-            document.getElementById('modal-role-title').innerText = roleId ? 'Modifica Antico Patto' : 'Forgia un Ruolo';
-
-            if (roleId) {
-                const role = appState.roles.find(r => r.id === roleId);
-                if (role) {
-                    document.getElementById('modal-role-id').value = role.id;
-                    document.getElementById('role-name-input').value = role.name;
-                    document.getElementById('role-gesture-input').value = role.gesture;
-                    document.getElementById('role-team-input').value = role.team;
-                    document.getElementById('role-min-count-input').value = role.minCount || 1;
-                    document.getElementById('role-desc-input').value = role.desc || '';
-                }
-            }
-            document.getElementById('role-modal').classList.remove('hidden');
-        }
-
-        function closeRoleModal() {
-            document.getElementById('role-modal').classList.add('hidden');
-        }
-
-        function saveRole(e) {
-            e.preventDefault();
-            const id = document.getElementById('modal-role-id').value;
-            const name = document.getElementById('role-name-input').value.trim();
-            const gesture = document.getElementById('role-gesture-input').value.trim();
-            const team = document.getElementById('role-team-input').value;
-            const minCount = parseInt(document.getElementById('role-min-count-input').value, 10) || 1;
-            const desc = document.getElementById('role-desc-input').value.trim();
-
-            if (id) {
-                const role = appState.roles.find(r => r.id === id);
-                if (role) {
-                    role.name = name;
-                    role.gesture = gesture;
-                    role.team = team;
-                    role.minCount = minCount;
-                    role.desc = desc;
-                }
-            } else {
-                const newId = name.toLowerCase().replace(/\s+/g, '_');
-                appState.roles.push({ id: newId, name, gesture, team, minCount, desc, active: true });
-            }
-
-            closeRoleModal();
-            renderAll();
-            showToast("Ruolo salvato nei Tomi!", "day");
-        }
-
-        function confirmDeleteRole(roleId) {
-            openConfirmModal("Elimina Ruolo", "Vuoi cancellare questo ruolo per l'eternità?", () => {
-                appState.roles = appState.roles.filter(r => r.id !== roleId);
-                renderAll();
-                showToast("Ruolo disintegrato.", "blood");
-            });
         }
 
         let currentPortalPlayer = null;
@@ -922,12 +1042,12 @@
             });
 
             currentPortalPlayer = null;
-            document.getElementById('reveal-card-content').classList.add('hidden');
+            document.getElementById('reveal-card-container').classList.add('hidden');
             document.getElementById('reveal-instruction').classList.add('hidden');
             
             const btn = document.getElementById('hold-reveal-btn');
             btn.disabled = true;
-            btn.className = "w-full py-3.5 bg-gradient-to-r from-purple-900 to-indigo-950 text-gray-400 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gray-700 shadow-2xl transition-all select-none opacity-50 cursor-not-allowed";
+            btn.className = "w-full py-4 bg-gradient-to-r from-purple-950 via-night-900 to-purple-950 text-gray-500 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gray-800 shadow-2xl transition-all select-none opacity-50 cursor-not-allowed";
 
             document.getElementById('reveal-portal-modal').classList.remove('hidden');
         }
@@ -944,7 +1064,8 @@
             if (!playerId) {
                 currentPortalPlayer = null;
                 btn.disabled = true;
-                btn.className = "w-full py-3.5 bg-gradient-to-r from-purple-900 to-indigo-950 text-gray-400 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gray-700 shadow-2xl transition-all select-none opacity-50 cursor-not-allowed";
+                btn.className = "w-full py-4 bg-gradient-to-r from-purple-950 via-night-900 to-purple-950 text-gray-500 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gray-800 shadow-2xl transition-all select-none opacity-50 cursor-not-allowed";
+                document.getElementById('reveal-card-container').classList.add('hidden');
                 document.getElementById('reveal-instruction').classList.add('hidden');
                 return;
             }
@@ -955,39 +1076,33 @@
             const role = appState.roles.find(r => r.id === currentPortalPlayer.roleId);
             const roleNameEl = document.getElementById('reveal-role-name');
             const roleBadgeEl = document.getElementById('reveal-team-badge');
-            const roleGestureEl = document.getElementById('reveal-role-gesture');
             const roleDescEl = document.getElementById('reveal-role-desc');
 
             if (role) {
                 roleNameEl.innerText = role.name;
                 roleBadgeEl.innerText = role.team.toUpperCase();
-                roleGestureEl.innerText = role.gesture || 'Nessuno';
                 roleDescEl.innerText = role.desc || 'Nessuna istruzione.';
             } else {
                 roleNameEl.innerText = "Villico Semplice";
                 roleBadgeEl.innerText = "VILLAGGIO";
-                roleGestureEl.innerText = "Nessun tocco notturno";
                 roleDescEl.innerText = "Non hai poteri notturni. Il tuo unico scopo è sopravvivere e scoprire i lupi durante il giorno!";
             }
 
             btn.disabled = false;
-            btn.className = "w-full py-3.5 bg-gradient-to-r from-purple-800 to-indigo-900 text-white font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-magic-400 shadow-2xl active:scale-95 transition-all select-none opacity-100 cursor-pointer";
+            btn.className = "w-full py-4 bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900 text-gold-300 font-medieval font-bold text-xs uppercase tracking-widest rounded-2xl border-2 border-gold-500 shadow-2xl active:scale-95 transition-all select-none opacity-100 cursor-pointer";
+            document.getElementById('reveal-card-container').classList.remove('hidden');
             document.getElementById('reveal-instruction').classList.remove('hidden');
         }
 
         function startHoldReveal(e) {
             if (e) e.preventDefault();
             if (!currentPortalPlayer) return;
-            document.getElementById('reveal-card-content').classList.remove('hidden');
-            document.getElementById('reveal-instruction').classList.add('hidden');
+            document.getElementById('flip-card-element').classList.add('flipped');
         }
 
         function endHoldReveal(e) {
             if (e) e.preventDefault();
-            document.getElementById('reveal-card-content').classList.add('hidden');
-            if (currentPortalPlayer) {
-                document.getElementById('reveal-instruction').classList.remove('hidden');
-            }
+            document.getElementById('flip-card-element').classList.remove('flipped');
         }
 
         function openConfirmModal(title, message, onConfirm) {
@@ -1009,52 +1124,18 @@
             confirmCallback = null;
         }
 
-        function exportGameStateToFile() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `Grimorio_Giorno${appState.dayNumber}_Backup.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-            showToast("Backup esportato con successo!", "day");
-        }
-
-        function importGameStateFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedState = JSON.parse(e.target.result);
-                    if (importedState && importedState.roles && importedState.players) {
-                        appState = importedState;
-                        applyThemeClasses();
-                        renderAll();
-                        showToast("Grimorio ripristinato dal file!", "day");
-                    } else {
-                        showToast("Formato file non valido!", "blood");
-                    }
-                } catch(err) {
-                    showToast("Errore durante la lettura del file!", "blood");
-                }
-            };
-            reader.readAsText(file);
-        }
-
         function showToast(msg, type = "day") {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            let classes = "px-4 py-2 rounded-full font-medieval text-xs font-bold uppercase tracking-widest shadow-2xl text-center transition-all duration-300 -translate-y-4 opacity-0 border ";
+            let classes = "px-4 py-2.5 rounded-full font-medieval text-xs font-bold uppercase tracking-widest shadow-2xl text-center transition-all duration-300 -translate-y-4 opacity-0 border gothic-border ";
             
             if (type === 'day') {
-                classes += "bg-parchment-100 text-wood-900 border-wood-600";
+                classes += "bg-parchment-200 text-wood-900 border-gold-600";
             } else if (type === 'night') {
-                classes += "bg-night-900 text-moon-300 border-magic-900";
+                classes += "bg-night-950 text-gold-300 border-purple-800";
             } else if (type === 'blood') {
-                classes += "bg-blood-900 text-white border-blood-500";
+                classes += "bg-blood-900 text-white border-red-500";
             }
             
             toast.className = classes;
