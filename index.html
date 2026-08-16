@@ -21,6 +21,7 @@
     
     <script>
         tailwind.config = {
+            darkMode: 'class', // Locking dark mode to application class state, disabling system preferences override
             theme: {
                 extend: {
                     fontFamily: {
@@ -185,9 +186,9 @@
                 <div class="glass-panel rounded-2xl p-4 space-y-3 border-2 border-gold-600/60 text-center shadow-2xl gothic-border animate-candle-flicker">
                     <div class="flex items-center justify-center gap-2">
                         <i class="fa-solid fa-wand-magic-sparkles text-gold-500 text-lg"></i>
-                        <h2 class="font-gothic text-sm font-bold tracking-widest text-wood-900 dark:text-gold-300 uppercase">Specchio dei Fati</h2>
+                        <h2 class="font-gothic text-sm font-bold tracking-widest uppercase app-title-text">Specchio dei Fati</h2>
                     </div>
-                    <p class="text-[11px] opacity-85 leading-relaxed font-body">
+                    <p class="text-[11px] opacity-90 leading-relaxed font-body app-body-text">
                         Passa il dispositivo al giocatore interessato per fargli scoprire in segreto il proprio destino.
                     </p>
                     <button onclick="openSecretPortalModal()" class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-indigo-900 to-purple-950 hover:from-purple-900 hover:to-indigo-800 text-gold-300 font-medieval font-bold text-xs uppercase tracking-widest rounded-xl border-2 border-gold-500 shadow-2xl active:scale-95 transition flex items-center justify-center gap-2">
@@ -197,8 +198,8 @@
 
                 <!-- Aggiunta Giocatori -->
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
-                    <h2 class="font-medieval text-xs font-bold flex items-center gap-2 text-wood-900 dark:text-gold-400 uppercase tracking-wider">
-                        <i class="fa-solid fa-user-plus"></i> Nuovi Viandanti
+                    <h2 class="font-medieval text-xs font-bold flex items-center gap-2 uppercase tracking-wider app-title-text">
+                        <i class="fa-solid fa-user-plus text-gold-500"></i> Nuovi Viandanti
                     </h2>
                     
                     <div class="flex gap-2">
@@ -212,7 +213,7 @@
                 <!-- Lista Popolazione -->
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-black/10 dark:border-white/10 pb-2.5 gap-2">
-                        <h2 class="font-medieval text-xs font-bold flex items-center gap-2 text-wood-900 dark:text-gold-400 uppercase tracking-wider">
+                        <h2 class="font-medieval text-xs font-bold flex items-center gap-2 uppercase tracking-wider app-title-text">
                             <i class="fa-solid fa-users text-gold-600"></i> Popolazione (<span id="total-players-badge">0</span>)
                         </h2>
                         <div class="flex items-center gap-2 shrink-0">
@@ -235,12 +236,12 @@
             <section id="sec-tomi" class="hidden space-y-4">
                 <div class="glass-panel rounded-2xl p-4 space-y-3">
                     <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-2">
-                        <h2 class="font-medieval text-xs font-bold flex items-center gap-2 text-wood-900 dark:text-gold-400 uppercase tracking-wider">
-                            <i class="fa-solid fa-masks-theater text-purple-600 dark:text-magic-400"></i> Indice dei Ruoli Attivi
+                        <h2 class="font-medieval text-xs font-bold flex items-center gap-2 uppercase tracking-wider app-title-text">
+                            <i class="fa-solid fa-masks-theater text-purple-500"></i> Indice dei Ruoli Attivi
                         </h2>
                     </div>
 
-                    <p class="text-[11px] opacity-85 leading-relaxed font-body text-wood-900 dark:text-parchment-200">
+                    <p class="text-[11px] opacity-90 leading-relaxed font-body app-body-text">
                         Attiva o disattiva i ruoli che desideri includere. L'assegnazione automatica (tasto 'Assegna Fati') userà esclusivamente i ruoli selezionati e la quantità stabilita.
                     </p>
 
@@ -347,7 +348,7 @@
             dayNumber: 1,
             nightCardIndex: 0,
             roles: [
-                { id: 'lupo', name: 'lupo', team: 'werewolf', minCount: 2, active: true, desc: 'Si sveglia la notte assieme agli altri lupi per cacciare e sbranare un villico.' },
+                { id: 'lupo', name: 'lupo', team: 'werewolf', minCount: 1, active: true, desc: 'Si sveglia la notte assieme agli altri lupi per cacciare e sbranare un villico.' },
                 { id: 'donna', name: 'donna', team: 'villager', minCount: 1, active: true, desc: 'Si sveglia la notte per proteggere una persona. Attenzione: se protegge un Lupo, la Donna muore!' },
                 { id: 'veggente', name: 'veggente', team: 'villager', minCount: 1, active: true, desc: 'Si sveglia e indica un giocatore. Il Narratore gli risponde se è un Lupo o non lo è.' },
                 { id: 'fratelli', name: 'fratelli', team: 'villager', minCount: 2, active: true, desc: 'Si svegliano la prima notte per vedersi e riconoscere il proprio fratello.' },
@@ -400,6 +401,7 @@
             const subtitle = document.getElementById('header-subtitle');
             
             if (appState.phase === 'night') {
+                html.classList.add('dark');
                 html.style.backgroundColor = '#05070e';
                 body.style.backgroundColor = '#05070e';
                 body.className = "theme-night h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-purple-600 selection:text-white";
@@ -415,6 +417,7 @@
                 phaseBtn.className = "px-3.5 py-2 rounded-xl font-medieval font-bold text-xs uppercase tracking-wider shadow-xl transition transform active:scale-95 flex items-center gap-2 bg-parchment-200 text-wood-900 border-2 border-gold-600 gothic-border";
                 phaseBtn.innerHTML = `<i class="fa-solid fa-sun text-amber-600"></i> Alba`;
             } else {
+                html.classList.remove('dark');
                 html.style.backgroundColor = '#523a1a';
                 body.style.backgroundColor = '#523a1a';
                 body.className = "theme-day h-[100dvh] w-full flex justify-center items-center overflow-hidden font-body text-sm selection:bg-blood-600 selection:text-white";
@@ -855,8 +858,11 @@
             document.getElementById('total-players-badge').innerText = appState.players.length;
             container.innerHTML = '';
 
+            const isNight = appState.phase === 'night';
+            const nameColor = isNight ? 'text-parchment-100' : 'text-wood-900';
+
             if (appState.players.length === 0) {
-                container.innerHTML = `<p class="text-[11px] opacity-80 text-center py-3 italic font-body text-wood-900 dark:text-parchment-200">La taverna è vuota. Aggiungi viandanti per iniziare.</p>`;
+                container.innerHTML = `<p class="text-[11px] opacity-80 text-center py-3 italic font-body ${nameColor}">La taverna è vuota. Aggiungi viandanti per iniziare.</p>`;
                 return;
             }
 
@@ -872,7 +878,7 @@
                 item.innerHTML = `
                     <div class="flex items-center gap-2 flex-1 min-w-0">
                         <button onclick="deletePlayer('${player.id}')" class="p-1 opacity-60 hover:opacity-100 hover:text-blood-600 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
-                        <span class="text-xs font-bold font-body truncate ${player.isDead ? 'line-through opacity-40' : 'text-wood-900 dark:text-parchment-100'}">${player.name}</span>
+                        <span class="text-xs font-bold font-body truncate ${player.isDead ? 'line-through opacity-40' : nameColor}">${player.name}</span>
                     </div>
                     
                     <div class="flex items-center gap-1.5 shrink-0">
@@ -986,6 +992,11 @@
             const container = document.getElementById('roles-container');
             container.innerHTML = '';
 
+            const isNight = appState.phase === 'night';
+            const titleColor = isNight ? 'text-gold-300' : 'text-wood-900';
+            const qtyColor = isNight ? 'text-gold-400' : 'text-wood-900';
+            const descColor = isNight ? 'text-parchment-200' : 'text-wood-900';
+
             appState.roles.forEach(role => {
                 const card = document.createElement('div');
                 const isWolf = role.team === 'werewolf';
@@ -1001,16 +1012,16 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <input type="checkbox" ${role.active ? 'checked' : ''} onchange="toggleRoleActive('${role.id}', this.checked)" class="w-4 h-4 accent-gold-500 rounded cursor-pointer">
-                            <span class="font-gothic text-xs font-bold capitalize text-wood-900 dark:text-gold-300">${role.name}</span>
+                            <span class="font-gothic text-xs font-bold capitalize ${titleColor}">${role.name}</span>
                             <span class="text-[8px] font-medieval font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeBg}">${role.team}</span>
                         </div>
                     </div>
 
                     <div class="text-[10px] space-y-1 font-body">
-                        <div class="flex justify-between font-medieval font-bold text-wood-900 dark:text-gold-400">
+                        <div class="flex justify-between font-medieval font-bold ${qtyColor}">
                             <span>Quantità in Partita: ${role.minCount || 1}</span>
                         </div>
-                        <p class="leading-relaxed font-normal text-wood-900 dark:text-parchment-200">${role.desc || 'Nessuna descrizione.'}</p>
+                        <p class="leading-relaxed font-normal ${descColor}">${role.desc || 'Nessuna descrizione.'}</p>
                     </div>
                 `;
                 container.appendChild(card);
